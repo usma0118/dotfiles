@@ -1,6 +1,6 @@
 ---
 - name: For Mac OS X install iterm2
-  community.general.homebrew_cask::
+  community.general.homebrew_cask:
     name: iterm2
     state: latest
 - name: Setup RH/Centos Systems
