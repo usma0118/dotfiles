@@ -1,0 +1,8 @@
+export EDITOR="nano"
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US"
+export PATH=$PATH:$HOME/dotfiles/scripts
+export TERM='xterm-256color'
+
+# Remove annoying ZSH messages
+unsetopt correctall

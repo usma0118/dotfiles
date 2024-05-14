@@ -1,0 +1,5 @@
+- name: Cleanup Brew packages
+  command: brew cleanup
+
+- name: 'Save screenshots to Downloads'
+  shell: defaults write com.apple.screencapture location ~/Downloads

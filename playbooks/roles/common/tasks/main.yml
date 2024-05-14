@@ -1,0 +1,22 @@
+---
+- name: Symlink my dotfiles
+  file: src=~/dotfiles/home/{{ item }}
+        dest=~/{{ item }}
+        state=link
+        force=yes
+  with_items:
+    - .vimrc
+    - .zshrc
+    - .zpreztorc
+    - .zlogin
+    - .zlogout
+    - .zshenv
+    - .gitignore
+    - .gitconfig
+
+- name: Symlink fish config
+  file:
+    src: ~/dotfiles/home/fish_config
+    dest: ~/.config/fish
+    state: link
+    force: yes
