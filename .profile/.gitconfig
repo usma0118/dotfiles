@@ -1,0 +1,12 @@
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
+[user]
+	name= usma0118
+        email= usmanmasood@msn.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBQDB+faH2Cz94ntwPEUZLz5CCKOtDWBcgAtWeNQtZQL
+[core]
+	excludesFile = ~/.gitignore_global

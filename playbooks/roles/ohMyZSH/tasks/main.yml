@@ -4,8 +4,7 @@
     name: iterm2
     state: latest
 - name: Setup RH/Centos Systems
-  hosts: localhost
-  tasks:
+  block:
     - name: Install zsh
       ansible.builtin.package:
         name: zsh
@@ -34,22 +33,10 @@
     dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
     depth: 1
 
-- name: Download NerdFonts
+- name: Installing Meslo Powerline Font
   ansible.builtin.get_url:
-    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/Meslo.zip
-    dest: "/tmp/Meslo.zip"
-
-- name: Install font files
-  ansible.builtin.unarchive:
-    src: "/tmp/Meslo.zip"
-    dest: "/tmp/Meslo"
-
-- name: Move font files to fonts directory
-  ansible.builtin.copy:
-    src: "/tmp/Meslo"
-    dest: /usr/share/fonts/Meslo
-    owner: root
-  become: true
+    url: https://github.com/powerline/fonts/blob/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf?raw=true
+    dest: $HOME/Library/Fonts/Meslo LG M Regular for Powerline.ttf
 
 - name: Update .zshrc
   ansible.builtin.lineinfile:

@@ -1,6 +1,6 @@
 ---
 - name: Symlink my dotfiles
-  file: src=~/dotfiles/home/{{ item }}
+  file: src=~/dotfiles/zshrc/{{ item }}
         dest=~/{{ item }}
         state=link
         force=yes
@@ -13,6 +13,7 @@
     - .zshenv
     - .gitignore
     - .gitconfig
+    - .gitignore_global
 
 #TODO: Setup Ohmyzsh And Powerlevel10k and symlink .pk10k.zsh config to ~/.pk10k.zsh
 

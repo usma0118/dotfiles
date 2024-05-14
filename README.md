@@ -8,6 +8,10 @@ Hacking like a geek:
 
 ## Setup for a new Mac machine
 
+```bash
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/bootstrap.sh)"
+```
+
 1. Install needed packages via bootstrap.sh
 2. As a convention `~/dotfiles` should be this repo
 
