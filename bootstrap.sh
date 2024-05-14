@@ -27,7 +27,8 @@ fi
 # First we need to check and see if the original dotfiles repo structure is in
 # place. If it is, back it up and clone the new structure and setup.
 if [ ! -d "$DOTFILES_DIR" ]; then
-	git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules
+    echo "clonning "$DOTFILES_REPO" into "$DOTFILES_DIR""
+	git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
 	# shellcheck source=/dev/null
 	source "$DOTFILES_DIR/playbooks/install"
 	# git config --global --unset commit.gpgsign
