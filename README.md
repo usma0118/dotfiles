@@ -1,4 +1,4 @@
-# Dotfiles by Alex Palcuie
+# Dotfiles by usma0118
 
 Hacking like a geek:
 
