@@ -1,4 +1,14 @@
 ---
+# user
+- name: store user
+  command: "whoami"
+  changed_when: false
+  check_mode: false
+  register: current_user_cmd
+
+- name: Set current user
+  set_fact:
+    user: "{{ current_user_cmd.stdout }}"
 - name: Setup RH/Centos Systems
   block:
     - name: Install zsh
