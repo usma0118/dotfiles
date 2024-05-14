@@ -15,9 +15,9 @@ for env_var in "${env_variables[@]}"; do
 done
 
 if [[ $(uname) == 'Linux' ]]; then
-    apt-add-repository ppa:ansible/ansible
-    apt-get update -y
-    apt-get install ansible software-properties-common git -y
+    sudo apt-add-repository ppa:ansible/ansible
+    sudo apt-get update -y
+    sudo apt-get install ansible software-properties-common git -y
 elif [[ $(uname) == 'Darwin' ]]; then
     xcode-select --install
     brew install ansible
