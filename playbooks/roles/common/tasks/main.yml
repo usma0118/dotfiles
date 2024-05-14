@@ -14,6 +14,8 @@
     - .gitignore
     - .gitconfig
 
+#TODO: Setup Ohmyzsh And Powerlevel10k and symlink .pk10k.zsh config to ~/.pk10k.zsh
+
 - name: Symlink fish config
   file:
     src: ~/dotfiles/home/fish_config
