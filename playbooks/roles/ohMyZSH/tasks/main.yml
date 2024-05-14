@@ -1,8 +1,4 @@
 ---
-- name: For Mac OS X install iterm2
-  community.general.homebrew_cask:
-    name: iterm2
-    state: latest
 - name: Setup RH/Centos Systems
   block:
     - name: Install zsh
@@ -10,22 +6,27 @@
         name: zsh
         state: present
       become: true
-- name: Set user shell to zsh
-  ansible.builtin.user:
-    name: "{{ user }}"
-    shell: /bin/zsh
-  become: true
-
-- name: Download ohmyzsh
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-    dest: "/tmp/install_ohmyzsh.sh"
-    mode: '0755'
-
-- name: Install ohmyzsh
-  ansible.builtin.script:
-    cmd: "/tmp/install_ohmyzsh.sh --unattended"
-    failed_when: "'FAILED' in ohmyzsh_result.stderr"
+    - name: Set user shell to zsh
+      ansible.builtin.user:
+        name: "{{ user }}"
+        shell: /bin/zsh
+      become: true
+- name: Setup RH/Centos Systems
+  when: ansible_os_family == "Darwin"
+  block:
+    - name: For Mac OS X install iterm2
+      community.general.homebrew_cask:
+        name: iterm2
+        state: latest
+    - name: Download ohmyzsh
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+        dest: "/tmp/install_ohmyzsh.sh"
+        mode: '0755'
+    - name: Install ohmyzsh
+      ansible.builtin.script:
+        cmd: "/tmp/install_ohmyzsh.sh --unattended"
+        failed_when: "'FAILED' in ohmyzsh_result.stderr"
 
 - name: Install PowerLevel10K
   ansible.builtin.git:
@@ -33,10 +34,10 @@
     dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
     depth: 1
 
-- name: Installing Meslo Powerline Font
-  ansible.builtin.get_url:
-    url: https://github.com/powerline/fonts/blob/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf?raw=true
-    dest: $HOME/Library/Fonts/Meslo LG M Regular for Powerline.ttf
+# - name: Installing Meslo Powerline Font
+#   ansible.builtin.get_url:
+#     url: https://github.com/powerline/fonts/blob/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf?raw=true
+#     dest: $HOME/Library/Fonts/Meslo LG M Regular for Powerline.ttf
 
 - name: Update .zshrc
   ansible.builtin.lineinfile:

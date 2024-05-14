@@ -21,12 +21,14 @@ done
 
 # Install dependencies based on OS
 if [[ $(uname) == 'Linux' ]]; then
+    if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
     sudo apt-add-repository ppa:ansible/ansible -y
     sudo apt-get update -y
-    sudo apt-get install ansible software-properties-common git -y
+    fi
+    sudo apt-get instal direnv ansible software-properties-common git -y
 elif [[ $(uname) == 'Darwin' ]]; then
     xcode-select --install
-    brew install ansible
+    brew install ansible direnv
 fi
 
 # Check if dotfiles directory exists, clone repo if not
