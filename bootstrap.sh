@@ -56,6 +56,7 @@ fi
 if [ "$(basename "$SHELL")" != "zsh" ]; then
     # Change default shell to zsh
     chsh -s "$(which zsh)"
+    /bin/zsh
     omz reload
     echo "Changed default shell to zsh."
 else
