@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
+set -o noglob
 set -x
 
 # Define variables
@@ -39,6 +40,7 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     echo "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
     git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
     # shellcheck source=/dev/null
+    cd "$DOTFILES_DIR"
     pushd && cd "$DOTFILES_DIR/playbooks"
     # shellcheck disable=SC1091
     source "./install"

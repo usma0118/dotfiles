@@ -2,7 +2,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/alpine
 {
-	"name": "Ansible devcontainer",
+	"name": "Devcontainer",
     "build": {
         "dockerfile": "Dockerfile"
     },
@@ -21,8 +21,12 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "$(curl -fsSL https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/bootstrap.sh)",
-
+	"postCreateCommand":{
+		"setup": "bash -c $(curl -fsSL https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/bootstrap.sh)"
+	  },
+	  "postStartCommand": {
+		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+	  },
 	// Configure tool-specific properties.
     "customizations": {
 		"vscode": {
