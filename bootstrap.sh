@@ -21,16 +21,20 @@ for env_var in "${env_variables[@]}"; do
 done
 
 # Install dependencies based on OS
-if [[ $(uname) == 'Linux' ]]; then
-    if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
-    sudo apt-add-repository ppa:ansible/ansible -y
-    sudo apt-get update -y
+if ! command -v ansible &>/dev/null && [[ $(source /etc/os-release && "$ID" != 'alpine' ]]; then
+    if [[ $(source /etc/os-release && "$ID" == 'debian' || "$ID" == 'ubuntu' ]]; then
+        if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
+            sudo apt-add-repository ppa:ansible/ansible -y
+            sudo apt-get update -y
+        fi
+        sudo apt-get install direnv ansible software-properties-common git -y
+    elif [[ $(source /etc/os-release && "$ID" == 'darwin' ]]; then
+        xcode-select --install
+        brew install ansible direnv
     fi
-    sudo apt-get instal direnv ansible software-properties-common git -y
-elif [[ $(uname) == 'Darwin' ]]; then
-    xcode-select --install
-    brew install ansible direnv
 fi
+
+
 
 # Check if dotfiles directory exists, clone repo if not
 if [ ! -d "$DOTFILES_DIR" ]; then
