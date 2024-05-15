@@ -21,18 +21,22 @@ for env_var in "${env_variables[@]}"; do
 done
 
 # Install dependencies based on OS
-if ! command -v ansible &>/dev/null && [[ $(source /etc/os-release && "$ID" != 'alpine' ]]; then
-    if [[ $(source /etc/os-release && "$ID" == 'debian' || "$ID" == 'ubuntu' ]]; then
+os_family=$(source /etc/os-release && echo "$ID")
+
+if ! command -v ansible &>/dev/null && [[ "$os_family" != 'alpine' ]]; then
+    if [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
         if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
             sudo apt-add-repository ppa:ansible/ansible -y
             sudo apt-get update -y
         fi
         sudo apt-get install direnv ansible software-properties-common git -y
-    elif [[ $(source /etc/os-release && "$ID" == 'darwin' ]]; then
+    elif [[ $(uname) == 'darwin' ]]; then
         xcode-select --install
         brew install ansible direnv
     fi
 fi
+
+
 
 
 
