@@ -1,25 +1,25 @@
 ---
 - name: Symlink my dotfiles
-  file: src=/home/{{ user }}/dotfiles/.profile/{{ item }}
+  file: src=/home/{{ user }}/.dotfiles/.profile/{{ item }}
         dest=/home/{{ user }}/{{ item }}
         state=link
         force=yes
   with_items:
-    #- .vimrc
+    # - .vimrc
     - .zshrc
-    #- .zpreztorc
-    #- .zlogin
-    #- .zlogout
-    #- .zshenv
-    #- .gitignore
+    - .gitignore
     - .gitconfig
     - .gitignore_global
+    - .aliases
 
-#TODO: Setup Ohmyzsh And Powerlevel10k and symlink .pk10k.zsh config to ~/.pk10k.zsh
-
-# - name: Symlink fish config
-#   file:
-#     src: ~/dotfiles/home/fish_config
-#     dest: ~/.config/fish
-#     state: link
-#     force: yes
+- name: Setup lsd dircolors
+  block:
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /home/{{ user }}/.config/lsd
+        state: directory
+    - name: Symlink .dircolors
+      file: src=/home/{{ user }}/.dotfiles/.profile/.dircolors
+            dest=/home/{{ user }}/.config/lsd
+            state=link
+            force=yes

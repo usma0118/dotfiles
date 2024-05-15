@@ -21,6 +21,7 @@ for env_var in "${env_variables[@]}"; do
 done
 
 # Install dependencies based on OS
+# shellcheck disable=SC1091
 os_family=$(source /etc/os-release && echo "$ID")
 
 if ! command -v ansible &>/dev/null && [[ "$os_family" != 'alpine' ]]; then
@@ -37,9 +38,6 @@ if ! command -v ansible &>/dev/null && [[ "$os_family" != 'alpine' ]]; then
 fi
 
 
-
-
-
 # Check if dotfiles directory exists, clone repo if not
 if [ ! -d "$DOTFILES_DIR" ]; then
     echo "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
@@ -54,4 +52,16 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     # git config --global --unset user.email
     # git config --global --unset user.name
     # git config --global --unset user.signingkey
+    popd
+fi
+cd "$DOTFILES_DIR/playbooks"
+# shellcheck disable=SC1091
+source "./install"
+
+if [ "$(basename "$SHELL")" != "zsh" ]; then
+    # Change default shell to zsh
+    chsh -s "$(which zsh)"
+    echo "Changed default shell to zsh."
+else
+    echo "Already using zsh as default shell."
 fi

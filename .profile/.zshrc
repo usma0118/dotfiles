@@ -29,6 +29,6 @@ unsetopt share_history
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[ -f ~/.aliases ] && source ~/.aliases
 autoload -U compinit; compinit

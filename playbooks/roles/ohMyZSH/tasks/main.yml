@@ -44,7 +44,7 @@
         depth: 1
     - name: Symlink my powerlevel10k theme
       become: true
-      file: src=/home/{{ user }}/dotfiles/zshrc/themes/{{ item }}
+      file: src=/home/{{ user }}/.dotfiles/zshrc/themes/{{ item }}
             dest=/home/{{ user }}/{{ item }}
             state=link
             force=yes
@@ -57,3 +57,9 @@
         depth: 1
     - name: Install PowerLevel10K
       ansible.builtin.script: "/tmp/fonts/install.sh"
+
+#https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/0xProto.zip
+
+# [oh-my-zsh] plugin 'zsh-syntax-highlighting' not found
+# [oh-my-zsh] plugin 'zsh-autosuggestions' not found
+# [oh-my-zsh] plugin 'zsh-ssh' not foun
