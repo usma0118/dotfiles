@@ -9,9 +9,9 @@ RUN apk add --no-cache \
     ca-certificates curl wget gettext sshpass \
     jq git openssh-client \
     go-task \
-    python3 py3-pip \
-    git direnv \
-    ansible &&\
+    python3 py3-pip py3-virtualenv\
+    git direnv shellcheck\
+    ansible ansible-lint &&\
     apk add --no-cache \
         --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
         age helm kubectl sops &&\
@@ -28,3 +28,8 @@ tee /home/$USERNAME/.config/direnv/direnv.toml > /dev/null <<EOF
 [whitelist]
 prefix = [ "/workspaces" ]
 EOF
+
+RUN mkdir -p /home/$USERNAME/.venv &&\
+    python3 -m venv /home/$USERNAME/.venv &&\
+    chown -R $USERNAME:$USERNAME /home/$USERNAME/.venv
+RUN . ./home/$USERNAME/.venv/bin/activate
