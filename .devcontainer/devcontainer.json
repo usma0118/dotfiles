@@ -21,7 +21,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "/bin/bash -c '$(curl -fsSL https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/bootstrap.sh)'",
+	"postCreateCommand": "$(curl -fsSL https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/bootstrap.sh)",
 
 	// Configure tool-specific properties.
     "customizations": {
