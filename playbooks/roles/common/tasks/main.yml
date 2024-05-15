@@ -1,17 +1,17 @@
 ---
 - name: Symlink my dotfiles
-  file: src=~/dotfiles/zshrc/{{ item }}
-        dest=~/{{ item }}
+  file: src=/home/{{ user }}/dotfiles/.profile/{{ item }}
+        dest=/home/{{ user }}/{{ item }}
         state=link
         force=yes
   with_items:
-    - .vimrc
+    #- .vimrc
     - .zshrc
-    - .zpreztorc
-    - .zlogin
-    - .zlogout
-    - .zshenv
-    - .gitignore
+    #- .zpreztorc
+    #- .zlogin
+    #- .zlogout
+    #- .zshenv
+    #- .gitignore
     - .gitconfig
     - .gitignore_global
 

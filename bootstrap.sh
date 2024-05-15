@@ -41,7 +41,7 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     # git config --global --unset commit.gpgsign
     # git config --global --unset gpg.format
     # git config --global --unset gpg.ssh.allowedsignersfile
-    # git config --global --unset gpg.ssh.program
+    git config --global --unset gpg.ssh.program
     # git config --global --unset user.email
     # git config --global --unset user.name
     # git config --global --unset user.signingkey

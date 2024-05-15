@@ -1,14 +1,8 @@
 ---
-# user
-- name: store user
-  command: "whoami"
-  changed_when: false
-  check_mode: false
-  register: current_user_cmd
-
-- name: Set current user
-  set_fact:
-    user: "{{ current_user_cmd.stdout }}"
+- name: Check if Oh My Zsh is installed
+  stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: ohmyzsh_installed
 - name: Setup RH/Centos Systems
   block:
     - name: Install zsh
@@ -21,10 +15,13 @@
         name: "{{ user }}"
         shell: /bin/zsh
       become: true
-- name: Setup RH/Centos Systems
-  when: ansible_os_family == "Darwin"
+- name: Setup iterm2 and ohmyzsh
+  when:
+    - ansible_os_family == "Darwin" or ansible_os_family == "Alpine"
+    - ohmyzsh_installed.stat.exists == false
   block:
     - name: For Mac OS X install iterm2
+      when: ansible_os_family == "Darwin"
       community.general.homebrew_cask:
         name: iterm2
         state: latest
@@ -34,23 +31,29 @@
         dest: "/tmp/install_ohmyzsh.sh"
         mode: '0755'
     - name: Install ohmyzsh
-      ansible.builtin.script:
-        cmd: "/tmp/install_ohmyzsh.sh --unattended"
-        failed_when: "'FAILED' in ohmyzsh_result.stderr"
+      shell: "/bin/bash /tmp/install_ohmyzsh.sh --unattended"
+      failed_when: "'FAILED' in ohmyzsh_result.stderr"
 
-- name: Install PowerLevel10K
-  ansible.builtin.git:
-    repo: https://github.com/romkatv/powerlevel10k.git
-    dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
-    depth: 1
-
-# - name: Installing Meslo Powerline Font
-#   ansible.builtin.get_url:
-#     url: https://github.com/powerline/fonts/blob/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf?raw=true
-#     dest: $HOME/Library/Fonts/Meslo LG M Regular for Powerline.ttf
-
-- name: Update .zshrc
-  ansible.builtin.lineinfile:
-    path: "/home/{{ user }}/.zshrc"
-    insertafter: EOF
-    line: "source /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme"
+- name: Installing Theme
+  block:
+    - name: Install PowerLevel10K (Theme)
+      become: true
+      ansible.builtin.git:
+        repo: https://github.com/romkatv/powerlevel10k.git
+        dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
+        depth: 1
+    - name: Symlink my powerlevel10k theme
+      become: true
+      file: src=/home/{{ user }}/dotfiles/zshrc/themes/{{ item }}
+            dest=/home/{{ user }}/{{ item }}
+            state=link
+            force=yes
+      with_items:
+        - .p10k.zsh
+    - name: install fonts (Powerline)
+      ansible.builtin.git:
+        repo: https://github.com/powerline/fonts.git
+        dest: "/tmp/fonts"
+        depth: 1
+    - name: Install PowerLevel10K
+      ansible.builtin.script: "/tmp/fonts/install.sh"
