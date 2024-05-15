@@ -8,6 +8,7 @@ YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 # Define variables
 DOTFILES_DIR="$HOME/.dotfiles"
+GITHUB_USER=${GITHUB_USER:-usma0118}
 DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 
 # Ensure required environment variables are set
