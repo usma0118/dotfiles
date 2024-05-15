@@ -22,7 +22,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand":{
-		"setup": "bash -c $(curl -fsSL https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/bootstrap.sh)"
+		"setup": "bash -c '$(curl -fsSL https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/bootstrap.sh)'"
 	  },
 	  "postStartCommand": {
 		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}"
