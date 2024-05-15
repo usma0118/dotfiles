@@ -21,6 +21,7 @@ plugins=(git
   	 zsh-ssh
      kubectl
 	 z
+	 fzf
 	 brew
 )
 

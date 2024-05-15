@@ -1,13 +1,13 @@
 FROM mcr.microsoft.com/devcontainers/base:alpine-3.19
 
 ENV DEBIAN_FRONTEND=noninteractive
-
+ENV PYTHONUNBUFFERED 1
 ARG USERNAME=vscode
 
 RUN apk add --no-cache \
     zsh \
     ca-certificates curl wget gettext sshpass \
-    jq git openssh-client \
+    fzf jq git openssh-client \
     go-task \
     python3 py3-pip py3-virtualenv\
     git direnv shellcheck\
@@ -18,7 +18,6 @@ RUN apk add --no-cache \
     apk add --no-cache \
     --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing \
         lsd
-#pre-commit
 USER $USERNAME
 
 # Add direnv whitelist for the workspace directory
@@ -28,8 +27,8 @@ tee /home/$USERNAME/.config/direnv/direnv.toml > /dev/null <<EOF
 [whitelist]
 prefix = [ "/workspaces" ]
 EOF
-
-RUN mkdir -p /home/$USERNAME/.venv &&\
-    python3 -m venv /home/$USERNAME/.venv &&\
-    chown -R $USERNAME:$USERNAME /home/$USERNAME/.venv
-RUN . ./home/$USERNAME/.venv/bin/activate
+WORKDIR /workspaces
+RUN virtualenv /home/$USERNAME/.venv
+ENV VIRTUAL_ENV /home/$USERNAME/.venv
+ENV PATH $VIRTUAL_ENV:$PATH
+RUN . $VIRTUAL_ENV/bin/activate && pip install --upgrade pip && pip install pre-commit
