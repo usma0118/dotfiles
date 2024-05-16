@@ -1,8 +1,5 @@
-#!/usr/bin/env bash
-set -e
-set -o noglob
-set -x
-
+#!/bin/bash
+set -ex
 # Define variables
 DOTFILES_DIR="$HOME/.dotfiles"
 GITHUB_USER=${GITHUB_USER:-usma0118}
@@ -40,8 +37,7 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     echo "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
     git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
     # shellcheck source=/dev/null
-    cd "$DOTFILES_DIR"
-    pushd && cd "$DOTFILES_DIR/playbooks"
+    pushd "$DOTFILES_DIR/playbooks"
     # shellcheck disable=SC1091
     source "./install"
     # Reset git config if needed
@@ -55,12 +51,13 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     popd
 fi
 
-if [ "$(basename "$SHELL")" != "zsh" ]; then
-    # Change default shell to zsh
-    chsh -s "$(which zsh)"
-    /bin/zsh
-    omz reload
-    echo "Changed default shell to zsh."
-else
-    echo "Already using zsh as default shell."
-fi
+# if [ "$(basename "$SHELL")" != "zsh" ]; then
+#     # Change default shell to zsh
+#     chsh -s "$(which zsh)"
+#     /bin/zsh
+#     # shellcheck disable=SC1091
+#     source "$HOME/.zshrc"
+#     echo "Changed default shell to zsh."
+# else
+#     echo "Already using zsh as default shell."
+# fi

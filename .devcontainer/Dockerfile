@@ -27,6 +27,10 @@ tee /home/$USERNAME/.config/direnv/direnv.toml > /dev/null <<EOF
 [whitelist]
 prefix = [ "/workspaces" ]
 EOF
+
+# RUN echo "Updating /etc/bash.bashrc and /etc/zsh/zshrc..." &&\
+#     if [[ -f /etc/bash.bashrc ]]; then echo -e 'eval "$(direnv hook bash)"' >> /etc/bash.bashrc fi  &&\
+#     if [ -f "/etc/zsh/zshrc" ]; then echo -e 'eval "$(direnv hook zsh)"' >> /etc/zsh/zshrc fi
 WORKDIR /workspaces
 RUN virtualenv /home/$USERNAME/.venv
 ENV VIRTUAL_ENV /home/$USERNAME/.venv
