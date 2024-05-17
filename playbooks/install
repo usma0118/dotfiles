@@ -36,6 +36,6 @@ if ! tty -s; then
   log_warning "Script is running in unattended mode."
   ansible-playbook -i inventory "$playbook_file"
 else
-  log "Script is running in attended mode."
+  log_info "Script is running in attended mode."
   ansible-playbook -i inventory "$playbook_file" -K
 fi

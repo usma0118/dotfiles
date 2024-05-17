@@ -12,8 +12,9 @@ log_info() {
 }
 
 # Function to log error messages
-log_error() {
+abort() {
     echo -e "${RED}$1${NC}"
+    exit 1
 }
 
 # Function to log warning messages

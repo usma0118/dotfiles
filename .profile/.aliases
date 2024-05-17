@@ -24,10 +24,11 @@ analyze_commands(){
 }
 
 # kubernetes configuration
-alias k="kubectl"
-alias ..="cd .."
+alias k='kubectl'
+alias ..='cd ..'
 alias ...="cd ../.."
 alias /h="cd ~/"
+alias init="~/.dotfiles/bootstrap.sh"
 
 alias ls='lsd'
 alias ll='ls -l'
