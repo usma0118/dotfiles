@@ -1,6 +1,4 @@
 FROM mcr.microsoft.com/devcontainers/base:alpine-3.19
-
-ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED 1
 ARG USERNAME=vscode
 
@@ -54,7 +52,7 @@ RUN mkdir /home/$USERNAME/.fonts \
 && git clone https://github.com/romkatv/powerlevel10k.git /home/$USERNAME/.oh-my-zsh/custom/themes/powerlevel10k --depth=1 \
 # Download powerlevel10k config
 && curl -sLo /home/$USERNAME/.p10k.zsh https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/zshrc/themes/.p10k.zsh \
-&& curl -sLo /home/$USERNAME/.p10k.zsh https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/.profile/.zshrc \
+&& curl -sLo /home/$USERNAME/.zsh https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/.profile/.zshrc \
 && curl -sLo /home/$USERNAME/.aliases https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/.profile/.aliases
 
 
@@ -64,14 +62,14 @@ RUN mkdir /home/$USERNAME/.fonts \
 #     && chown -R $USERNAME /commandhistory \
 #     && echo $SNIPPET >> "/home/$USERNAME/.bashrc"
 
-# RUN mkdir -p /home/$USERNAME/.vscode-server/extensions \
-#         /home/$USERNAME/.cache \
-#         /home/$USERNAME/.local \
-#         /home/$USERNAME/.aws \
-#         /home/$USERNAME/commandhistory \
-#     && chown -R $USERNAME \
-#         /home/$USERNAME/.vscode-server \
-#         /home/$USERNAME/.cache \
-#         /home/$USERNAME/.local \
-#         /home/$USERNAME/.aws \
-#         /home/$USERNAME/commandhistory
+RUN mkdir -p /home/$USERNAME/.vscode-server/extensions \
+        /home/$USERNAME/.cache \
+        /home/$USERNAME/.local \
+        /home/$USERNAME/.aws \
+        /home/$USERNAME/commandhistory \
+    && chown -R $USERNAME \
+        /home/$USERNAME/.vscode-server \
+        /home/$USERNAME/.cache \
+        /home/$USERNAME/.local \
+        /home/$USERNAME/.aws \
+        /home/$USERNAME/commandhistory
