@@ -52,7 +52,9 @@ source "./install"
 # git config --global --unset commit.gpgsign
 # git config --global --unset gpg.format
 # git config --global --unset gpg.ssh.allowedsignersfile
-git config --global --unset gpg.ssh.program
+if [[ "$os_family" != 'alpine' ]]; then
+    git config --global --unset gpg.ssh.program
+fi
 # git config --global --unset user.email
 # git config --global --unset user.name
 # git config --global --unset user.signingkey
