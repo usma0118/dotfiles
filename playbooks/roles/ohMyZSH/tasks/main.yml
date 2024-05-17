@@ -88,9 +88,11 @@
         name: zsh-autosuggestions
         state: present
     - name: zsh-autosuggestions on "Alpine"
-      community.general.apk:
-        name: zsh-autosuggestions
-        state: present
+      become: true
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions
+        dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+        depth: 1
       when:
         - ansible_os_family == "Alpine"
     - name: zsh-autosuggestions on "Ubuntu"
@@ -116,8 +118,5 @@
 #         depth: 1
 #       when:
 #         - ansible_os_family == "Alpine" or ansible_os_family == "Ubuntu"
-#https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/0xProto.zip
 
-# [oh-my-zsh] plugin 'zsh-syntax-highlighting' not found
-# [oh-my-zsh] plugin 'zsh-autosuggestions' not found
-# [oh-my-zsh] plugin 'zsh-ssh' not foun
+#https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/0xProto.zip

@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-
 set -u
 
 abort() {
@@ -63,17 +62,6 @@ pushd "$DOTFILES_DIR/playbooks"
 # shellcheck disable=SC1091
 source "./install"
 echo "Rollout completed"
-# Reset git config if needed
-# git config --global --unset commit.gpgsign
-# git config --global --unset gpg.format
-# git config --global --unset gpg.ssh.allowedsignersfile
-if [[ "$os_family" != 'alpine' ]]; then
-    echo "Unset gpg.ssh.program"
-    git config --global --unset gpg.ssh.program
-fi
-# git config --global --unset user.email
-# git config --global --unset user.name
-# git config --global --unset user.signingkey
 popd
 
 if [ "$(basename "$0")" != "zsh" ] && [[ "$os_family" != 'alpine' ]]; then
@@ -85,4 +73,9 @@ if [ "$(basename "$0")" != "zsh" ] && [[ "$os_family" != 'alpine' ]]; then
 else
     #TODO: omz reload
     echo "Already using zsh as default shell."
+fi
+
+if [[ "$os_family" == 'alpine' ]]; then
+    echo "Unset gpg.ssh.program"
+    git config --global --unset gpg.ssh.program
 fi
