@@ -9,7 +9,7 @@
     - .zshrc
     - .gitignore
     - .gitconfig
-    - .gitignore_global
+    - .gitignore
     - .aliases
 
 - name: Setup lsd dircolors

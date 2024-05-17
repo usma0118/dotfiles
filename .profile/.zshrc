@@ -18,7 +18,7 @@ plugins=(git
 	 direnv
  	 zsh-syntax-highlighting
 	 zsh-autosuggestions
-  	 zsh-ssh
+  	#  zsh-ssh
      kubectl
 	 z
 	 fzf

@@ -1,5 +1,6 @@
 {
     "ansible.python.interpreterPath": "/opt/homebrew/bin/python3",
+    // "terminal.integrated.fontFamily": "MesloLGS NF",
     "dotfiles.repository": "usma0118/dotfiles",
     "dotfiles.targetPath": "~/.dotfiles",
     "dotfiles.installCommand": "~/.dotfiles/bootstrap.sh",
