@@ -1,17 +1,23 @@
 ---
-- name: Symlink my dotfiles
-  file: src=/home/{{ user }}/.dotfiles/.profile/{{ item }}
-        dest=/home/{{ user }}/{{ item }}
-        state=link
-        force=yes
-  with_items:
-    # - .vimrc
-    - .zshrc
-    - .gitignore
-    - .gitconfig
-    - .gitignore_global
-    - .aliases
-
+- name: Symlink dotfiles profile
+  block:
+    - name: Symlink my dotfiles
+      file: src=/home/{{ user }}/.dotfiles/.profile/{{ item }}
+            dest=/home/{{ user }}/{{ item }}
+            state=link
+            force=yes
+      with_items:
+        # - .vimrc
+        - .zshrc
+        - .gitignore
+        - .gitconfig
+        - .gitignore_global
+        - .aliases
+    - name: Symlink .config.zsh
+      ansible.builtin.file: src=/home/{{ user }}/.dotfiles/zshrc/config.zsh
+            dest=/home/{{ user }}/{{ item }}
+            state=link
+            force=yes
 - name: Setup lsd dircolors
   block:
     - name: Create a directory if it does not exist

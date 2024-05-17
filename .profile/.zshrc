@@ -34,4 +34,5 @@ unsetopt share_history
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 [ -f ~/.aliases ] && source ~/.aliases
+[ -f ~/config.zsh ] && source ~/config.zsh
 autoload -U compinit; compinit
