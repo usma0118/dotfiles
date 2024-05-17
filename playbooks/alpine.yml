@@ -1,9 +1,13 @@
 ---
-- hosts: local
+- name: Alpine container setup
+  hosts: local
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
   vars:
     user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
   roles:
     - role: common
-      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+      common_user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
     - role: ohMyZSH
-      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+      ohmyzsh_user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"

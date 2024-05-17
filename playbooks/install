@@ -1,13 +1,35 @@
 #!/bin/bash
+# Function to log info messages
+log_info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
 
+# Function to log error messages
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Function to log warning messages
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
 # Install dependencies based on OS
 # shellcheck disable=SC1091
 os_family=$(source /etc/os-release && echo "$ID")
-
-if [[ "$os_family" == 'alpine' ]]; then
-  ansible-playbook -i inventory alpine.yml
-elif [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
-  ansible-playbook -i inventory ubuntu.yml -K
-elif [[ $(uname) == 'Darwin' ]]; then
-  ansible-playbook -i inventory osx.yml -K
+log_warning "OS is: $os_family"
+declare -r playbook_file="${os_family}.yml"
+if ! tty -s; then
+  log_warning "Script is running in unattended mode."
+  ansible-playbook -i inventory "$playbook_file"
+else
+  log_warning "Script is running in attended mode."
+  ansible-playbook -i inventory "$playbook_file" -K
 fi
+
+# if [[ "$os_family" == 'alpine' ]]; then
+#   ansible-playbook -i inventory alpine.yml
+# elif [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
+#   ansible-playbook -i inventory ubuntu.yml -K
+# elif [[ $(uname) == 'Darwin' ]]; then
+#   ansible-playbook -i inventory osx.yml -K
+# fi

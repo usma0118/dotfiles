@@ -3,7 +3,7 @@
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.oh-my-zsh"
   register: ohmyzsh_installed
-- name: Setup RH/Centos Systems
+- name: Setup zsh as shell
   block:
     - name: Install zsh
       ansible.builtin.package:
@@ -31,8 +31,14 @@
         dest: "/tmp/install_ohmyzsh.sh"
         mode: '0755'
     - name: Install ohmyzsh
-      ansible.builtin.shell: "/bin/bash /tmp/install_ohmyzsh.sh --unattended"
+      ansible.builtin.command: /tmp/install_ohmyzsh.sh --unattended
       failed_when: "'FAILED' in ohmyzsh_result.stderr"
+      when:
+        - not ohmyzsh_installed.stat.exists
+    - name: Cleanup directory
+      ansible.builtin.file:
+        path: "/tmp/install_ohmyzsh.sh"
+        state: absent
 
 - name: Installing Theme
   block:
@@ -42,21 +48,28 @@
         repo: https://github.com/romkatv/powerlevel10k.git
         dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
         depth: 1
+        single_branch: yes
+        version: master
     - name: Symlink my powerlevel10k theme
       become: true
-      ansible.builtin.file: src=/home/{{ user }}/.dotfiles/zshrc/themes/{{ item }}
-            dest=/home/{{ user }}/{{ item }}
-            state=link
-            force=yes
+      ansible.builtin.file:
+        src: /home/{{ user }}/.dotfiles/zshrc/themes/{{ item }}
+        dest: /home/{{ user }}/{{ item }}
+        state: link
+        force: true
       with_items:
         - .p10k.zsh
-    - name: install fonts (Powerline)
+    - name: Install fonts (Powerline)
       ansible.builtin.git:
         repo: https://github.com/powerline/fonts.git
         dest: "/tmp/fonts"
         depth: 1
     - name: Install PowerLevel10K
       ansible.builtin.script: "/tmp/fonts/install.sh"
+    - name: Cleanup directory
+      ansible.builtin.file:
+        path: /tmp/fonts/
+        state: absent
 - name: Setup oh-my-zsh plugin zsh-syntax-highlighting
   block:
     - name: ZSH-syntax-highlighting on "Darwin"
@@ -102,5 +115,3 @@
 #         depth: 1
 #       when:
 #         - ansible_os_family == "Alpine" or ansible_os_family == "Ubuntu"
-
-#https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/0xProto.zip
