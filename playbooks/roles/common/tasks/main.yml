@@ -9,7 +9,7 @@
     - .zshrc
     - .gitignore
     - .gitconfig
-    - .gitignore
+    - .gitignore_global
     - .aliases
 
 - name: Setup lsd dircolors
@@ -19,7 +19,7 @@
         path: /home/{{ user }}/.config/lsd
         state: directory
     - name: Symlink .dircolors
-      file: src=/home/{{ user }}/.dotfiles/.profile/.dircolors
+      ansible.builtin.file: src=/home/{{ user }}/.dotfiles/.profile/.dircolors
             dest=/home/{{ user }}/.config/lsd/.dircolors
             state=link
             force=yes
