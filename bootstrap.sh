@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 set -u
 
@@ -58,10 +58,12 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
 fi
 
+echo "Rolling out playbooks"
 # shellcheck source=/dev/null
 pushd "$DOTFILES_DIR/playbooks"
 # shellcheck disable=SC1091
 source "./install"
+echo "Rollout completed"
 # Reset git config if needed
 # git config --global --unset commit.gpgsign
 # git config --global --unset gpg.format

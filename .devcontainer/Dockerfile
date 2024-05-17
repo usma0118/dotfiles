@@ -23,7 +23,7 @@ RUN if [ -f /etc/bash.bashrc ]; then \
     fi && \
     if [ -f /etc/zsh/zshrc ]; then \
         echo -e 'eval "$(direnv hook zsh)"' >> /etc/zsh/zshrc; \
-    fi        
+    fi
 USER $USERNAME
 
 # Add direnv whitelist for the workspace directory
@@ -31,7 +31,7 @@ RUN mkdir -p /home/$USERNAME/.config/direnv &&\
     chown -R $USERNAME:$USERNAME /home/$USERNAME/.config &&\
 tee /home/$USERNAME/.config/direnv/direnv.toml > /dev/null <<EOF
 [whitelist]
-prefix = [ "/workspaces" ]
+prefix = [ "/workspaces", "/home/vscode/.dotfiles" ]
 EOF
 
 WORKDIR /workspaces

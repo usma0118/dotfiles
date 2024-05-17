@@ -1,0 +1,9 @@
+---
+- hosts: local
+  vars:
+    user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+  roles:
+    - role: common
+      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: ohMyZSH
+      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"

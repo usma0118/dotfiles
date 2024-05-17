@@ -4,8 +4,8 @@
 # shellcheck disable=SC1091
 os_family=$(source /etc/os-release && echo "$ID")
 
-if [[ "$os_family" != 'alpine' ]]; then
-  ansible-playbook -i inventory ubuntu.yml
+if [[ "$os_family" == 'alpine' ]]; then
+  ansible-playbook -i inventory alpine.yml
 elif [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
   ansible-playbook -i inventory ubuntu.yml -K
 elif [[ $(uname) == 'Darwin' ]]; then
