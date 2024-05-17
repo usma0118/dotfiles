@@ -1,12 +1,18 @@
 #!/bin/bash
 set -ex
 # Define variables
-DOTFILES_DIR="$HOME/.dotfiles"
+declare -r DOTFILES_DIR="$HOME/.dotfiles"
+
+# check and ensure direnv is hooked to shell
+if ! command -v direnv &>/dev/null; then
+    eval "$(direnv export bash)"
+fi
+
 GITHUB_USER=${GITHUB_USER:-usma0118}
-DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
+declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 
 # Ensure required environment variables are set
-env_variables=("GITHUB_USER" "DOTFILES_REPO" "DOTFILES_DIR")
+declare -r env_variables=("GITHUB_USER" "DOTFILES_REPO" "DOTFILES_DIR")
 for env_var in "${env_variables[@]}"; do
     if [ -z "${!env_var}" ]; then
         echo "Error: $env_var is not set"
@@ -36,28 +42,27 @@ fi
 if [ ! -d "$DOTFILES_DIR" ]; then
     echo "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
     git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
-    # shellcheck source=/dev/null
-    pushd "$DOTFILES_DIR/playbooks"
-    # shellcheck disable=SC1091
-    source "./install"
-    # Reset git config if needed
-    # git config --global --unset commit.gpgsign
-    # git config --global --unset gpg.format
-    # git config --global --unset gpg.ssh.allowedsignersfile
-    git config --global --unset gpg.ssh.program
-    # git config --global --unset user.email
-    # git config --global --unset user.name
-    # git config --global --unset user.signingkey
-    popd
 fi
 
-# if [ "$(basename "$SHELL")" != "zsh" ]; then
-#     # Change default shell to zsh
-#     chsh -s "$(which zsh)"
-#     /bin/zsh
-#     # shellcheck disable=SC1091
-#     source "$HOME/.zshrc"
-#     echo "Changed default shell to zsh."
-# else
-#     echo "Already using zsh as default shell."
-# fi
+# shellcheck source=/dev/null
+pushd "$DOTFILES_DIR/playbooks"
+# shellcheck disable=SC1091
+source "./install"
+# Reset git config if needed
+# git config --global --unset commit.gpgsign
+# git config --global --unset gpg.format
+# git config --global --unset gpg.ssh.allowedsignersfile
+git config --global --unset gpg.ssh.program
+# git config --global --unset user.email
+# git config --global --unset user.name
+# git config --global --unset user.signingkey
+popd
+
+if [ "$(basename "$0")" != "zsh" ]; then
+    # Change default shell to zsh
+    chsh -s "$(which zsh)"
+    echo "Changed default shell to zsh."
+else
+    omz reload
+    echo "Already using zsh as default shell."
+fi
