@@ -68,6 +68,7 @@ echo "Rollout completed"
 # git config --global --unset gpg.format
 # git config --global --unset gpg.ssh.allowedsignersfile
 if [[ "$os_family" != 'alpine' ]]; then
+    echo "Unset gpg.ssh.program"
     git config --global --unset gpg.ssh.program
 fi
 # git config --global --unset user.email

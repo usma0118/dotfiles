@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 ARG USERNAME=vscode
 
 RUN apk add --no-cache \
-    zsh \
+    zsh zsh-autosuggestions \
     ca-certificates curl wget gettext sshpass \
     fzf jq git openssh-client \
     go-task \
