@@ -57,7 +57,65 @@
         depth: 1
     - name: Install PowerLevel10K
       ansible.builtin.script: "/tmp/fonts/install.sh"
+- name: Setup oh-my-zsh plugin zsh-syntax-highlighting
+  block:
+    - name: zsh-syntax-highlighting on "Darwin"
+      when:
+        - ansible_os_family == "Darwin"
+      community.general.homebrew:
+        name: zsh-syntax-highlighting
+        state: present
+    - name: zsh-syntax-highlighting on "Alpine"
+      become: true
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+        depth: 1
+      when:
+        - ansible_os_family == "Alpine"
+    - name: zsh-syntax-highlighting on "Ubuntu"
+      ansible.builtin.apt:
+        name: zsh-syntax-highlighting
+        state: present
+      when:
+        - ansible_os_family == "Ubuntu"
+- name: Setup oh-my-zsh plugin zsh-autosuggestions
+  block:
+    - name: zsh-autosuggestions on "Darwin"
+      when:
+        - ansible_os_family == "Darwin"
+      community.general.homebrew:
+        name: zsh-autosuggestions
+        state: present
+    - name: zsh-autosuggestions on "Alpine"
+      community.general.apk:
+        name: zsh-autosuggestions
+        state: present
+      when:
+        - ansible_os_family == "Alpine"
+    - name: zsh-autosuggestions on "Ubuntu"
+      ansible.builtin.apt:
+        name: zsh-autosuggestions
+        state: present
+      when:
+        - ansible_os_family == "Ubuntu"
 
+- name: Setup oh-my-zsh plugin zsh-ssh
+  block:
+    - name: zsh-ssh on "Darwin"
+      when:
+        - ansible_os_family == "Darwin"
+      community.general.homebrew:
+        name: zsh-ssh
+        state: present
+    - name: zsh-ssh on "Alpine"
+      become: true
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-ssh.git
+        dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-ssh"
+        depth: 1
+      when:
+        - ansible_os_family == "Alpine" or ansible_os_family == "Ubuntu"
 #https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/0xProto.zip
 
 # [oh-my-zsh] plugin 'zsh-syntax-highlighting' not found

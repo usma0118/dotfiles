@@ -25,8 +25,7 @@ declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 declare -r env_variables=("GITHUB_USER" "DOTFILES_REPO" "DOTFILES_DIR")
 for env_var in "${env_variables[@]}"; do
     if [ -z "${!env_var}" ]; then
-        echo "Error: $env_var is not set"
-        exit 1
+        abort "Error: $env_var is not set"
     fi
 done
 

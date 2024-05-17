@@ -22,7 +22,9 @@ plugins=(git
      kubectl
 	 z
 	 fzf
+	 git
 	 brew
+	 docker
 )
 
 source $ZSH/oh-my-zsh.sh
