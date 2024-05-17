@@ -32,7 +32,11 @@ elif [ -z "$os_family" ]; then
 fi
 
 declare -r playbook_file="${os_family}.yml"
-if ! tty -s; then
+
+if [[ "$os_family" == 'alpine' ]]; then
+  log_warning "Script is running in alpine, proceeding with silent mode."
+  ansible-playbook -i inventory "$playbook_file"
+elif ! tty -s; then
   log_warning "Script is running in unattended mode."
   ansible-playbook -i inventory "$playbook_file"
 else

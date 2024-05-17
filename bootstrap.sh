@@ -84,7 +84,8 @@ if [[ "$os_family" == 'alpine' ]]; then
 fi
 log_info "Rolling out playbooks"
 
-# check and ensure direnv is hooked to shell
-if ! command -v omz &>/dev/null; then
+# check and ensure omz is reloaded
+if command -v omz &>/dev/null; then
+    log_info "reloading Omz"
     omz reload
 fi
