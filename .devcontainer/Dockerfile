@@ -55,21 +55,14 @@ RUN mkdir /home/$USERNAME/.fonts \
 && curl -sLo /home/$USERNAME/.zsh https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/.profile/.zshrc \
 && curl -sLo /home/$USERNAME/.aliases https://raw.githubusercontent.com/usma0118/dotfiles/HEAD/.profile/.aliases
 
-
-# RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
-#     && mkdir /commandhistory \
-#     && touch /commandhistory/.bash_history \
-#     && chown -R $USERNAME /commandhistory \
-#     && echo $SNIPPET >> "/home/$USERNAME/.bashrc"
-
 RUN mkdir -p /home/$USERNAME/.vscode-server/extensions \
         /home/$USERNAME/.cache \
         /home/$USERNAME/.local \
-        /home/$USERNAME/.aws \
-        /home/$USERNAME/commandhistory \
+        /home/$USERNAME/.history \
     && chown -R $USERNAME \
         /home/$USERNAME/.vscode-server \
         /home/$USERNAME/.cache \
         /home/$USERNAME/.local \
-        /home/$USERNAME/.aws \
-        /home/$USERNAME/commandhistory
+        /home/$USERNAME/.history
+RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/home/$USERNAME/.history/.bash_history" >> "/home/$USERNAME/.bashrc" &&\
+    echo "export PROMPT_COMMAND='history -a' && export HISTFILE=/home/$USERNAME/.history/.zsh_history" >> "/home/$USERNAME/.zsh_history"

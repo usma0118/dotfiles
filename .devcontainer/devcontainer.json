@@ -25,11 +25,15 @@
 		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}",
 		"git.ssh.program": "git config --global --unset gpg.ssh.program"
 	  },
+	  "mounts": [
+		"source=${localEnv:HOME}/.config/sops/age/keys.txt,target=/home/vscode/.config/sops/age/keys.txt,type=bind,consistency=cached,readonly",
+		"source=dotfiles-bashhistory,target=/home/vscode/.history,type=volume"
+	],
 	// Configure tool-specific properties.
     "customizations": {
 		"vscode": {
 		  "settings": {
-			"dev.containers.copyGitConfig": true,
+			"dev.containers.copyGitConfig": false,
 			"editor.tabSize": 4,
 			"terminal.integrated.defaultProfile.linux": "zsh",
 			"terminal.integrated.profiles.linux": {

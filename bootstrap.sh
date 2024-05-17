@@ -54,8 +54,8 @@ if ! command -v ansible &>/dev/null && [[ "$os_family" != 'alpine' ]]; then
         sudo apt-get install direnv ansible software-properties-common git -y
     elif [[ $(uname) == 'darwin' ]]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        xcode-select --install
-        brew install direnv git
+        # xcode-select --install
+        # brew install direnv git
     fi
 fi
 
@@ -81,4 +81,9 @@ if [[ "$os_family" == 'alpine' ]]; then
     log_warning "Unset gpg.ssh.program"
     git config --global --unset gpg.ssh.program
 fi
-log_warning "Rolling out playbooks"
+log_info "Rolling out playbooks"
+
+# check and ensure direnv is hooked to shell
+if ! command -v omz &>/dev/null; then
+    omz reload
+fi

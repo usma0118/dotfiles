@@ -21,22 +21,21 @@ log_warning() {
     echo -e "${YELLOW}$1${NC}"
 }
 # Install dependencies based on OS
+os_family=$(uname)
+if [ "$os_family" == "Linux" ]; then
 # shellcheck disable=SC1091
-os_family=$(source /etc/os-release && echo "$ID")
-log_warning "OS is: $os_family"
+  os_family=$(source /etc/os-release && echo "$ID")
+  log_warning "OS is: $os_family"
+elif [ -z "$os_family" ]; then
+  log_error "Unable to identify OS"
+  exit 1
+fi
+
 declare -r playbook_file="${os_family}.yml"
 if ! tty -s; then
   log_warning "Script is running in unattended mode."
   ansible-playbook -i inventory "$playbook_file"
 else
-  log_warning "Script is running in attended mode."
+  log "Script is running in attended mode."
   ansible-playbook -i inventory "$playbook_file" -K
 fi
-
-# if [[ "$os_family" == 'alpine' ]]; then
-#   ansible-playbook -i inventory alpine.yml
-# elif [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
-#   ansible-playbook -i inventory ubuntu.yml -K
-# elif [[ $(uname) == 'Darwin' ]]; then
-#   ansible-playbook -i inventory osx.yml -K
-# fi
