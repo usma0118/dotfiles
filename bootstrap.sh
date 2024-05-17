@@ -74,10 +74,12 @@ fi
 # git config --global --unset user.signingkey
 popd
 
-if [ "$(basename "$0")" != "zsh" ]; then
-    # Change default shell to zsh
-    chsh -s "$(which zsh)"
-    echo "Changed default shell to zsh."
+if [ "$(basename "$0")" != "zsh" ] && [[ "$os_family" != 'alpine' ]]; then
+    if [ "$EUID" -eq 0 ]; then
+        # Change default shell to zsh
+        chsh -s "$(which zsh)"
+        echo "Changed default shell to zsh."
+    fi
 else
     omz reload
     echo "Already using zsh as default shell."
