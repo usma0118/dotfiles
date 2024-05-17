@@ -15,7 +15,7 @@
         - .aliases
     - name: Symlink .config.zsh
       ansible.builtin.file: src=/home/{{ user }}/.dotfiles/zshrc/config.zsh
-            dest=/home/{{ user }}/{{ item }}
+            dest=/home/{{ user }}/config.zsh
             state=link
             force=yes
 - name: Setup lsd dircolors
