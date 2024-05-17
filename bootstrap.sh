@@ -81,6 +81,6 @@ if [ "$(basename "$0")" != "zsh" ] && [[ "$os_family" != 'alpine' ]]; then
         echo "Changed default shell to zsh."
     fi
 else
-    omz reload
+    #TODO: omz reload
     echo "Already using zsh as default shell."
 fi
