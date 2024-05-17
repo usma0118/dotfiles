@@ -2,5 +2,5 @@
     "ansible.python.interpreterPath": "/opt/homebrew/bin/python3",
     "dotfiles.repository": "usma0118/dotfiles",
     "dotfiles.targetPath": "~/.dotfiles",
-    "dotfiles.installCommand": "/bin/bash ~/.dotfiles/bootstrap.sh",
+    "dotfiles.installCommand": "~/.dotfiles/bootstrap.sh",
 }

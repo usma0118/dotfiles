@@ -18,6 +18,12 @@ RUN apk add --no-cache \
     apk add --no-cache \
     --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing \
         lsd
+RUN if [ -f /etc/bash.bashrc ]; then \
+    echo -e 'eval "$(direnv hook bash)"' >> /etc/bash.bashrc; \
+    fi && \
+    if [ -f /etc/zsh/zshrc ]; then \
+        echo -e 'eval "$(direnv hook zsh)"' >> /etc/zsh/zshrc; \
+    fi        
 USER $USERNAME
 
 # Add direnv whitelist for the workspace directory
@@ -28,12 +34,26 @@ tee /home/$USERNAME/.config/direnv/direnv.toml > /dev/null <<EOF
 prefix = [ "/workspaces" ]
 EOF
 
-# RUN echo "Updating /etc/bash.bashrc and /etc/zsh/zshrc..." &&\
-#     if [[ -f /etc/bash.bashrc ]]; then echo -e 'eval "$(direnv hook bash)"' >> /etc/bash.bashrc fi  &&\
-#     if [ -f "/etc/zsh/zshrc" ]; then echo -e 'eval "$(direnv hook zsh)"' >> /etc/zsh/zshrc fi
 WORKDIR /workspaces
-RUN eval "$(direnv export $0)"
 RUN virtualenv /home/$USERNAME/.venv
 ENV VIRTUAL_ENV /home/$USERNAME/.venv
 ENV PATH $VIRTUAL_ENV:$PATH
 RUN . $VIRTUAL_ENV/bin/activate && pip install --upgrade pip && pip install pre-commit
+
+# RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
+#     && mkdir /commandhistory \
+#     && touch /commandhistory/.bash_history \
+#     && chown -R $USERNAME /commandhistory \
+#     && echo $SNIPPET >> "/home/$USERNAME/.bashrc"
+
+# RUN mkdir -p /home/$USERNAME/.vscode-server/extensions \
+#         /home/$USERNAME/.cache \
+#         /home/$USERNAME/.local \
+#         /home/$USERNAME/.aws \
+#         /home/$USERNAME/commandhistory \
+#     && chown -R $USERNAME \
+#         /home/$USERNAME/.vscode-server \
+#         /home/$USERNAME/.cache \
+#         /home/$USERNAME/.local \
+#         /home/$USERNAME/.aws \
+#         /home/$USERNAME/commandhistory
