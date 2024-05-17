@@ -32,7 +32,7 @@ EOF
 #     if [[ -f /etc/bash.bashrc ]]; then echo -e 'eval "$(direnv hook bash)"' >> /etc/bash.bashrc fi  &&\
 #     if [ -f "/etc/zsh/zshrc" ]; then echo -e 'eval "$(direnv hook zsh)"' >> /etc/zsh/zshrc fi
 WORKDIR /workspaces
-RUN eval "$(direnv export bash)"
+RUN eval "$(direnv export $0)"
 RUN virtualenv /home/$USERNAME/.venv
 ENV VIRTUAL_ENV /home/$USERNAME/.venv
 ENV PATH $VIRTUAL_ENV:$PATH

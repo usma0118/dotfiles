@@ -1,12 +1,22 @@
 #!/bin/bash
 set -ex
+
+set -u
+
+abort() {
+  printf "%s\n" "$@" >&2
+  exit 1
+}
+
+# Fail fast with a concise message when not using bash
+# Single brackets are needed here for POSIX compatibility
+# shellcheck disable=SC2292
+if [ -z "${BASH_VERSION:-}" ]
+then
+  abort "Bash is required to interpret this script."
+fi
 # Define variables
 declare -r DOTFILES_DIR="$HOME/.dotfiles"
-
-# check and ensure direnv is hooked to shell
-if ! command -v direnv &>/dev/null; then
-    eval "$(direnv export bash)"
-fi
 
 GITHUB_USER=${GITHUB_USER:-usma0118}
 declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
@@ -31,12 +41,16 @@ if ! command -v ansible &>/dev/null && [[ "$os_family" != 'alpine' ]]; then
         fi
         sudo apt-get install direnv ansible software-properties-common git -y
     elif [[ $(uname) == 'darwin' ]]; then
-        #TODO: install brew
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         xcode-select --install
-        brew install ansible direnv git
+        brew install direnv git
     fi
 fi
 
+# check and ensure direnv is hooked to shell
+if ! command -v direnv &>/dev/null; then
+    eval "$(direnv export "$0")"
+fi
 
 # Check if dotfiles directory exists, clone repo if not
 if [ ! -d "$DOTFILES_DIR" ]; then
