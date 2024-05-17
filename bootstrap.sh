@@ -1,10 +1,24 @@
 #!/bin/bash
 set -e
 set -u
+# Define color codes
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+# Function to log info messages
+log_info() {
+    echo -e "${GREEN}$1${NC}"
+}
 
-abort() {
-  printf "%s\n" "$@" >&2
-  exit 1
+# Function to log error messages
+log_error() {
+    echo -e "${RED}$1${NC}"
+}
+
+# Function to log warning messages
+log_warning() {
+    echo -e "${YELLOW}$1${NC}"
 }
 
 # Fail fast with a concise message when not using bash
@@ -56,26 +70,15 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
 fi
 
-echo "Rolling out playbooks"
 # shellcheck source=/dev/null
 pushd "$DOTFILES_DIR/playbooks"
 # shellcheck disable=SC1091
 source "./install"
-echo "Rollout completed"
+log_warning "Rollout completed"
 popd
 
-if [ "$(basename "$0")" != "zsh" ] && [[ "$os_family" != 'alpine' ]]; then
-    if [ "$EUID" -eq 0 ]; then
-        # Change default shell to zsh
-        chsh -s "$(which zsh)"
-        echo "Changed default shell to zsh."
-    fi
-else
-    #TODO: omz reload
-    echo "Already using zsh as default shell."
-fi
-
 if [[ "$os_family" == 'alpine' ]]; then
-    echo "Unset gpg.ssh.program"
+    log_warning "Unset gpg.ssh.program"
     git config --global --unset gpg.ssh.program
 fi
+log_warning "Rolling out playbooks"

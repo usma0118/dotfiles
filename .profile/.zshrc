@@ -5,6 +5,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+[ -f ~/.aliases ] && source ~/.aliases
+[ -f ~/.exports ] && source ~/.exports
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -33,6 +35,4 @@ unsetopt share_history
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-[ -f ~/.aliases ] && source ~/.aliases
-[ -f ~/config.zsh ] && source ~/config.zsh
 autoload -U compinit; compinit

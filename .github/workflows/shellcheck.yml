@@ -1,5 +1,5 @@
 ---
-name: Test
+name: Shellcheck
 
 on: [push, pull_request]
 

@@ -14,7 +14,6 @@
       ansible.builtin.user:
         name: "{{ user }}"
         shell: /bin/zsh
-      become: true
 - name: Setup iterm2 and ohmyzsh
   when:
     - ansible_os_family == "Darwin"
@@ -43,7 +42,6 @@
 - name: Installing Theme
   block:
     - name: Install PowerLevel10K (Theme)
-      become: true
       ansible.builtin.git:
         repo: https://github.com/romkatv/powerlevel10k.git
         dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
@@ -51,7 +49,6 @@
         single_branch: yes
         version: master
     - name: Symlink my powerlevel10k theme
-      become: true
       ansible.builtin.file:
         src: /home/{{ user }}/.dotfiles/zshrc/themes/{{ item }}
         dest: /home/{{ user }}/{{ item }}
