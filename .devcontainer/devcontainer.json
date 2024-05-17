@@ -28,7 +28,7 @@
 	  "postStartCommand": {
 		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}",
 		"git.ssh.program": "git config --global --unset gpg.ssh.program",
-		"direnv": "eval $(direnv export $0)"
+		"direnv": "zsh eval $(direnv export zsh)"
 	  },
 	// Configure tool-specific properties.
     "customizations": {
