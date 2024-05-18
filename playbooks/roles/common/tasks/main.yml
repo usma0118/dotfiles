@@ -6,10 +6,10 @@
         src: /home/{{ user }}/.dotfiles/.profile/{{ item }}
         dest: /home/{{ user }}/{{ item }}
         state: link
+        force: true
       with_items:
         # - .vimrc
         - .zshrc
-        - .gitignore
         - .gitconfig
         - .gitignore_global
         - .aliases
@@ -18,6 +18,7 @@
         src: /home/{{ user }}/.dotfiles/zshrc/config.zsh
         dest: /home/{{ user }}/config.zsh
         state: link
+        force: true
 - name: Setup lsd dircolors
   block:
     - name: Create a directory if it does not exist

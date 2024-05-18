@@ -47,12 +47,15 @@ done
 # shellcheck disable=SC1091
 os_family=$(source /etc/os-release && echo "$ID")
 
-if ! command -v ansible &>/dev/null && [[ "$os_family" != 'alpine' ]]; then
+if ! command -v ansible &>/dev/null ; then
     if [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
         if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
             sudo apt-add-repository ppa:ansible/ansible -y
         fi
         sudo apt-get install direnv ansible software-properties-common git -y
+    elif [[ "$os_family" != 'alpine' ]]; then
+        log_warning "Missing ansible, installing now.."
+        sudo apk add ansible
     elif [[ $(uname) == 'darwin' ]]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # xcode-select --install
