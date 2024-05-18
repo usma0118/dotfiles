@@ -8,6 +8,9 @@ export BLOCK_SIZE="'1" # makes 1,000,000 for big sizes
 alias reload='source ~/.zshrc'
 alias hgrep='history -fd 0 | grep'
 
+# dotfiles
+alias dotfiles='/usr/local/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
 # Important files
 alias zshrc="nano ~/.zshrc"
 

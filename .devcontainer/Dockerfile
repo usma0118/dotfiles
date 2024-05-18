@@ -33,11 +33,12 @@ prefix = [ "/workspaces", "/home/vscode/.dotfiles" ]
 EOF
 
 WORKDIR /workspaces
-RUN virtualenv /home/$USERNAME/.venv
+RUN virtualenv /home/$USERNAME/.venv &&\
+    git config --global --add safe.directory /workspaces/dotfiles &&\
+    git config --global --add safe.directory /home/$USERNAME/.dotfiles
 ENV VIRTUAL_ENV /home/$USERNAME/.venv
 ENV PATH $VIRTUAL_ENV:$PATH
 RUN . $VIRTUAL_ENV/bin/activate && pip install --upgrade pip && pip install pre-commit
-
 RUN mkdir /home/$USERNAME/.fonts \
 # Download MesloLGS font files
 && curl -sLo /home/$USERNAME/.fonts/MesloLGS\ NF\ Regular.ttf https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf \
