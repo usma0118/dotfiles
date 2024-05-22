@@ -64,8 +64,7 @@ RUN mkdir -p /home/$USERNAME/.vscode-server/extensions \
         /home/$USERNAME/.vscode-server \
         /home/$USERNAME/.cache \
         /home/$USERNAME/.local \
-        /home/$USERNAME/.history
-        && chown -R $USERNAME \
+        /home/$USERNAME/.history \
         /home/$USERNAME/.oh-my-zsh/custom/themes \
         /home/$USERNAME/.oh-my-zsh/custom/plugins &&\
         SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/home/$USERNAME/.history/.bash_history" >> "/home/$USERNAME/.bashrc" &&\
