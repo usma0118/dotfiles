@@ -81,6 +81,12 @@
         state: present
       when:
         - ansible_os_family == "Ubuntu"
+    - name: zsh-syntax-highlighting on "Alpine"
+      become: true
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+        depth: 1
 - name: Setup oh-my-zsh plugin zsh-autosuggestions
   block:
     - name: ZSH-autosuggestions on "Darwin"
@@ -89,6 +95,12 @@
         state: present
       when:
         - ansible_os_family == "Darwin"
+    - name: zsh-autosuggestions on "Alpine"
+      become: true
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions.git
+        dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+        depth: 1
     - name: ZSH-autosuggestions on "Ubuntu"
       ansible.builtin.apt:
         name: zsh-autosuggestions
