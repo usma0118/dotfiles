@@ -36,3 +36,5 @@ unsetopt share_history
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 autoload -U compinit; compinit
+
+[[ ! -f ~/scripts/initk8-configs.sh ]] || source ~/scripts/initk8-configs.sh
