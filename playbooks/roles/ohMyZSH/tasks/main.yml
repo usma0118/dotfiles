@@ -46,7 +46,7 @@
         repo: https://github.com/romkatv/powerlevel10k.git
         dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
         depth: 1
-        single_branch: yes
+        single_branch: true
         version: master
     - name: Symlink my powerlevel10k theme
       ansible.builtin.file:
@@ -55,18 +55,21 @@
         state: link
         force: true
       with_items:
-        - .p10k.zsh
+        - dev.p10k.zsh
     - name: Install fonts (Powerline)
-      ansible.builtin.git:
-        repo: https://github.com/powerline/fonts.git
-        dest: "/tmp/fonts"
-        depth: 1
-    - name: Install PowerLevel10K
-      ansible.builtin.script: "/tmp/fonts/install.sh"
-    - name: Cleanup directory
-      ansible.builtin.file:
-        path: /tmp/fonts/
-        state: absent
+      when: ansible_os_family == "Darwin"
+      block:
+        - name: git clone fonts (Powerline)
+          ansible.builtin.git:
+            repo: https://github.com/powerline/fonts.git
+            dest: "/tmp/fonts"
+            depth: 1
+        - name: Install PowerLevel10K
+          ansible.builtin.script: "/tmp/fonts/install.sh"
+        - name: Cleanup directory
+          ansible.builtin.file:
+            path: /tmp/fonts/
+            state: absent
 - name: Setup oh-my-zsh plugin zsh-syntax-highlighting
   block:
     - name: ZSH-syntax-highlighting on "Darwin"
@@ -107,20 +110,3 @@
         state: present
       when:
         - ansible_os_family == "Ubuntu"
-
-# - name: Setup oh-my-zsh plugin zsh-ssh
-#   block:
-#     - name: zsh-ssh on "Darwin"
-#       when:
-#         - ansible_os_family == "Darwin"
-#       community.general.homebrew:
-#         name: zsh-ssh
-#         state: present
-#     - name: zsh-ssh on "Alpine"
-#       become: true
-#       ansible.builtin.git:
-#         repo: https://github.com/zsh-users/zsh-ssh.git
-#         dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-ssh"
-#         depth: 1
-#       when:
-#         - ansible_os_family == "Alpine" or ansible_os_family == "Ubuntu"

@@ -4,4 +4,10 @@
     "dotfiles.repository": "usma0118/dotfiles",
     "dotfiles.targetPath": "~/.dotfiles",
     "dotfiles.installCommand": "~/.dotfiles/bootstrap.sh",
+    "ansible.python.activationScript": "/home/vscode/.venv/bin/activate",
+    "ansible.ansible.path": "/home/vscode/.venv/bin/ansible",
+    "ansible.validation.enabled": true,
+    "ansible.validation.lint.arguments": "-c ansible/.ansible-lint",
+    "ansible.validation.lint.enabled": true,
+    "ansible.validation.lint.path": "/home/vscode/.venv/bin/ansible-lint",
 }

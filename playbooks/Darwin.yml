@@ -40,7 +40,7 @@
             state: present
             with_items:
               - podman
-              - multipass
+              # - multipass
         - name: Homebrew cask
           community.general.homebrew_cask:
             name: "{{ item }}"
@@ -49,5 +49,4 @@
               - google-drive
               - instaloader
               - tradingview
-              - caskformula/caskformula/inkscape # fails
         #brew install fluxcd/tap/flux and . <(flux completion zsh)
