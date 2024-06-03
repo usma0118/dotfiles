@@ -51,7 +51,7 @@
     - name: Symlink my powerlevel10k theme
       ansible.builtin.file:
         src: /home/{{ user }}/.dotfiles/zshrc/themes/{{ item }}
-        dest: /home/{{ user }}/{{ item }}
+        dest: /home/{{ user }}/.p10k.zsh
         state: link
         force: true
       with_items:
