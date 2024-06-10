@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 set -e
 set -u
 declare -r DOTFILES_DIR="$HOME/.dotfiles"

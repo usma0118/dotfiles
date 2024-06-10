@@ -11,10 +11,9 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	  ,"postStartCommand": {
 		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}",
-		"git.ssh.program": "git config --global --unset gpg.ssh.program"
+		"dotfiles": "bash -x $HOME/.dotfiles/bootstrap.sh >> /home/vscode/.history/dotfiles.log"
 	  },
 	  "mounts": [
-		"source=${localEnv:HOME}/.kube,target=/home/vscode/.kube,type=bind,consistency=cached,readonly",
 		"source=bashhistory,target=/home/vscode/.history,type=volume"
 	],
 	// Configure tool-specific properties.
