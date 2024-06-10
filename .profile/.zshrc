@@ -40,3 +40,5 @@ autoload -U compinit; compinit
 [[ ! -f ~/scripts/initk8-configs.sh ]] || source ~/scripts/initk8-configs.sh
 
 command -v flux >/dev/null && . <(flux completion zsh)
+
+[[ ! -d $HOME/.dotfiles/lib/dotfiles_updater.sh ]] || source $HOME/.dotfiles/lib/dotfiles_updater.sh

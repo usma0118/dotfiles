@@ -2,14 +2,11 @@
 set -e
 set -u
 declare -r DOTFILES_DIR="$HOME/.dotfiles"
-# Change to the repository directory
-pushd "$DOTFILES_DIR" || { echo "Repository not found at $DOTFILES_DIR"; exit 1; }
-
 # Fetch the latest changes from the remote repository
-git fetch origin main -q
+git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" fetch origin main -q
 # Check if the local main branch is behind the remote main branch
-LOCAL=$(git rev-parse main)
-REMOTE=$(git rev-parse origin/main)
+LOCAL=$(git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" rev-parse main)
+REMOTE=$(git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" rev-parse origin/main)
 if [ "$LOCAL" != "$REMOTE" ]; then
     echo "There are new updates available for the repository."
 
@@ -20,8 +17,6 @@ if [ "$LOCAL" != "$REMOTE" ]; then
 
     if [[ $RESPONSE =~ ^[Yy]$ ]]; then
         echo "Updating the repository..."
-        git pull origin main &> /dev/null
-        echo "Repository updated."
+        git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" pull origin main -q
     fi
 fi
-popd || exit
