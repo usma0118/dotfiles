@@ -38,3 +38,5 @@ unsetopt share_history
 autoload -U compinit; compinit
 
 [[ ! -f ~/scripts/initk8-configs.sh ]] || source ~/scripts/initk8-configs.sh
+
+command -v flux >/dev/null && . <(flux completion zsh)
