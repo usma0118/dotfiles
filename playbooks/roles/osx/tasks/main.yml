@@ -1,7 +1,7 @@
+---
 - name: Cleanup Brew packages
   when: ansible_os_family == "Darwin"
-  command: brew cleanup
-
-- name: 'Save screenshots to Downloads'
+  ansible.builtin.command: brew cleanup
+- name: Save screenshots to Downloads
   when: ansible_os_family == "Darwin"
-  shell: defaults write com.apple.screencapture location ~/Downloads
+  ansible.builtin.command: defaults write com.apple.screencapture location ~/Downloads

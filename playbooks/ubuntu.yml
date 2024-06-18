@@ -9,5 +9,5 @@
       user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
   pre_tasks:
     - name: Display current user
-      debug:
+      ansible.builtin.debug:
         var: user

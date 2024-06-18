@@ -27,8 +27,8 @@
     - name: Download ohmyzsh
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-        dest: "/tmp/install_ohmyzsh.sh"
-        mode: '0755'
+        dest: /tmp/install_ohmyzsh.sh
+        mode: "0755"
     - name: Install ohmyzsh
       ansible.builtin.command: /tmp/install_ohmyzsh.sh --unattended
       failed_when: "'FAILED' in ohmyzsh_result.stderr"
@@ -36,7 +36,7 @@
         - not ohmyzsh_installed.stat.exists
     - name: Cleanup directory
       ansible.builtin.file:
-        path: "/tmp/install_ohmyzsh.sh"
+        path: /tmp/install_ohmyzsh.sh
         state: absent
 
 - name: Installing Theme
@@ -44,7 +44,7 @@
     - name: Install PowerLevel10K (Theme)
       ansible.builtin.git:
         repo: https://github.com/romkatv/powerlevel10k.git
-        dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
+        dest: /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k
         depth: 1
         single_branch: true
         version: master
@@ -59,13 +59,13 @@
     - name: Install fonts (Powerline)
       when: ansible_os_family == "Darwin"
       block:
-        - name: git clone fonts (Powerline)
+        - name: Git clone fonts (Powerline)
           ansible.builtin.git:
             repo: https://github.com/powerline/fonts.git
-            dest: "/tmp/fonts"
+            dest: /tmp/fonts
             depth: 1
         - name: Install PowerLevel10K
-          ansible.builtin.script: "/tmp/fonts/install.sh"
+          ansible.builtin.script: /tmp/fonts/install.sh
         - name: Cleanup directory
           ansible.builtin.file:
             path: /tmp/fonts/
@@ -88,7 +88,7 @@
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-        dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+        dest: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
         depth: 1
 - name: Setup oh-my-zsh plugin zsh-autosuggestions
   block:
@@ -102,7 +102,7 @@
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-autosuggestions.git
-        dest: "/home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+        dest: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
         depth: 1
     - name: ZSH-autosuggestions on "Ubuntu"
       ansible.builtin.apt:
