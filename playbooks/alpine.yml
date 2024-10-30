@@ -4,9 +4,9 @@
   gather_facts: true
   any_errors_fatal: true
   vars:
-    user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    user: "{{ ansible_user | default(lookup('env', 'USER') | default('vscode')) }}"
   roles:
     - role: common
-      common_user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+      common_user: "{{ user }}"
     - role: ohMyZSH
-      ohmyzsh_user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+      ohmyzsh_user: "{{ user }}"
