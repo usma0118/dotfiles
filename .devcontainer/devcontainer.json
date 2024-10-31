@@ -11,7 +11,7 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	  ,"postStartCommand": {
 		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}",
-		"dotfiles": "bash -x $HOME/.dotfiles/bootstrap.sh >> /home/vscode/.history/dotfiles.log"
+		"dotfiles": "bash -x $HOME/.dotfiles/bootstrap.sh"
 	  },
 	  "mounts": [
 		"source=bashhistory,target=/home/vscode/.history,type=volume"
