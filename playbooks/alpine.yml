@@ -4,7 +4,7 @@
   gather_facts: true
   any_errors_fatal: true
   vars:
-    user: "{{ ansible_user | default(lookup('env', 'USER') | default('vscode')) }}"
+    user: "{{ ansible_user | lookup('env', 'USER') | default('vscode') }}"
 
   pre_tasks:
     - name: Ensure user variable is set
