@@ -76,6 +76,7 @@ fi
 
 # shellcheck source=/dev/null
 pushd "$DOTFILES_DIR/playbooks"
+log_info "running with commit id: $(git rev-parse HEAD)"
 # shellcheck disable=SC1091
 source "./install"
 log_warning "Rollout completed"
