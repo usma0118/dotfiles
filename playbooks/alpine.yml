@@ -9,8 +9,12 @@
     - name: Print the determined ansible user
       debug:
         msg: "Ansible user is {{ user }}"
-  roles:
-    - role: common
-      common_user: "{{ user }}"
-    - role: ohMyZSH
-      ohmyzsh_user: "{{ user }}"
+  tasks:
+    - name: Print the determined ansible user
+      debug:
+        msg: "user is {{ user }}, {{ lookup('env', 'USER') }}"
+  # roles:
+  #   - role: common
+  #     common_user: "{{ user }}"
+  #   - role: ohMyZSH
+  #     ohmyzsh_user: "{{ user }}"
