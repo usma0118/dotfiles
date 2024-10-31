@@ -33,7 +33,7 @@ fi
 
 declare -r playbook_file="${os_family}.yml"
 
-log_info "running with commit id: " git rev-parse HEAD
+log_info "running with commit id: $(git rev-parse HEAD)"
 
 if [[ "$os_family" == 'alpine' ]]; then
   log_warning "Script is running in alpine, proceeding with silent mode."
