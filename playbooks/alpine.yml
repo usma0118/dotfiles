@@ -14,7 +14,10 @@
         fail_msg: "User variable could not be determined."
     - name: Print the determined ansible user
       debug:
-        msg: "Ansible user is {{ user }}"
+        msg:
+          - "Ansible user is {{ user }}"
+          - "ansible_user: {{ ansible_user | default('undefined') }}"
+          - "Environment USER: {{ lookup('env', 'USER') | default('undefined') }}"
 
   roles:
     - role: common
