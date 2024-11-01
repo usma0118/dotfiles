@@ -1,17 +1,28 @@
 #!/usr/bin/env bash
-# If there's already a kubeconfig file in ~/.kube/config it will import that too and all the contexts
+
+# Default kubeconfig file
 DEFAULT_KUBECONFIG_FILE="$HOME/.kube/config"
-if test -f "${DEFAULT_KUBECONFIG_FILE}"
-then
-  export KUBECONFIG="$DEFAULT_KUBECONFIG_FILE"
+if test -f "${DEFAULT_KUBECONFIG_FILE}"; then
+  export KUBECONFIG="${DEFAULT_KUBECONFIG_FILE}"
+else
+  export KUBECONFIG=""
 fi
-# Your additional kubeconfig files should be inside ~/.kube/config.d
+
+# Directory for additional kubeconfig files
 ADD_KUBECONFIG_FILES="$HOME/.kube/config.d"
 mkdir -p "${ADD_KUBECONFIG_FILES}"
-OIFS="$IFS"
-IFS=$'\n'
-for kubeconfigFile in $(find "${ADD_KUBECONFIG_FILES}" -type f -name "*.yml" -o -name "*.yaml")
-do
-    export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
-done
-IFS="$OIFS"
+
+# Find and append additional kubeconfig files
+find "${ADD_KUBECONFIG_FILES}" -type f \( -name "*.yml" -o -name "*.yaml" \) -exec sh -c '
+  for kubeconfigFile; do
+    if [ -n "$KUBECONFIG" ]; then
+      KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
+    else
+      KUBECONFIG="$kubeconfigFile"
+    fi
+  done
+  export KUBECONFIG
+' sh {} +
+
+# Export final KUBECONFIG for the current session
+export KUBECONFIG
