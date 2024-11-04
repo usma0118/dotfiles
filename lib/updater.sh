@@ -14,7 +14,10 @@ git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" fetch origin main
 # Check if the local main branch is behind the remote main branch
 LOCAL=$(git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" rev-parse main)
 REMOTE=$(git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" rev-parse origin/main)
-if [ "$LOCAL" != "$REMOTE" ]; then
+
+if [ "$LOCAL" = "$REMOTE" ]; then
+    log_info "Latest version: ${REMOTE}"
+elif git merge-base --is-ancestor "$LOCAL" "$REMOTE"; then
     log_info "There are new updates available for the repository."
 
     # Prompt the user to update
@@ -26,6 +29,4 @@ if [ "$LOCAL" != "$REMOTE" ]; then
         log_info "Updating the repository..."
         git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" pull origin main -q
     fi
-else
-    log_info "Running with latest commit: $(git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" rev-parse HEAD)"
 fi

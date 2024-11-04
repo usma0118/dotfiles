@@ -32,16 +32,9 @@ if [ ! -d "$DOTFILES_DIR" ]; then
 fi
 
 # Install dependencies based on OS
-# Check OS using /etc/os-release
-if [ -f /etc/os-release ]; then
-    # shellcheck disable=SC1091
-    . /etc/os-release  # Source the file to access variables
-    declare -r os_family="$ID"
-else
-    # Fallback to uname if /etc/os-release is not available
-    # shellcheck disable=SC2155
-    declare -r os_family="$(uname -s)"
-fi
+# shellcheck disable=SC1091
+source "$DOTFILES_DIR/lib/utils.sh"
+
 log_info "Running on OS: $os_family"
 if ! command -v ansible &>/dev/null ; then
     if [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
