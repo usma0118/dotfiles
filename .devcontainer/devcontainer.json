@@ -3,50 +3,12 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/alpine
 {
 	"name": "Devcontainer",
-	"image": "ghcr.io/usma0118/containers/devcontainers/base:latest",
-    "runArgs": [
-		"--userns=keep-id"
-	  ],
-	  "updateRemoteUserUID": true
+	"image": "ghcr.io/usma0118/containers/devcontainers/base:latest"
 	// Use 'postCreateCommand' to run commands after the container is created.
 	  ,"postStartCommand": {
-		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}",
-		"dotfiles": "bash -x $HOME/.dotfiles/bootstrap.sh"
+		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}"
 	  },
 	  "mounts": [
-		"source=bashhistory,target=/home/vscode/.history,type=volume"
-	],
-	// Configure tool-specific properties.
-    "customizations": {
-		"vscode": {
-		  "settings": {
-			"dev.containers.copyGitConfig": false,
-			"editor.tabSize": 4,
-			"terminal.integrated.defaultProfile.linux": "zsh",
-			"terminal.integrated.profiles.linux": {
-			  "bash": {
-				"path": "bash",
-				"icon": "terminal-bash"
-			  },
-			  "zsh": {
-				"path": "zsh"
-			  }
-			}
-		  },
-		  "extensions": [
-			"redhat.ansible",
-			"redhat.vscode-yaml",
-			"mhutchie.git-graph",
-			"eamodio.gitlens",
-			"github.vscode-github-actions",
-			"johnpapa.vscode-peacock",
-			"timonwong.shellcheck",
-			"robertz.code-snapshot",
-			"Wattenberger.footsteps",
-			"mechatroner.rainbow-csv",
-			"ms-python.vscode-pylance",
-			"mechatroner.rainbow-csv"
-		]
-		}
-	  }
+		"source=bashhistory,target=/home/${containerUser}/.history,type=volume"
+	]
 }
