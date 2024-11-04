@@ -41,4 +41,4 @@ autoload -U compinit; compinit
 
 command -v flux >/dev/null && . <(flux completion zsh)
 
-[[ ! -d $HOME/.dotfiles/lib/dotfiles_updater.sh ]] || source $HOME/.dotfiles/lib/dotfiles_updater.sh
+[[ ! -d $HOME/.dotfiles/lib/dotfiles_updater.sh ]] || source $HOME/.dotfiles/lib/updater.sh

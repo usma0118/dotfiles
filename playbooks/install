@@ -1,43 +1,20 @@
 #!/bin/bash
 set -e
 set -u
-# Define color codes
-RED='\033[0;31m'
-YELLOW='\033[0;33m'
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
-# Function to log info messages
-log_info() {
-    echo -e "${GREEN}$1${NC}"
-}
 
-# Function to log error messages
-log_error() {
-    echo -e "${RED}$1${NC}"
-}
-
-# Function to log warning messages
-log_warning() {
-    echo -e "${YELLOW}$1${NC}"
-}
-# Install dependencies based on OS
-os_family=$(uname)
-if [ "$os_family" == "Linux" ]; then
 # shellcheck disable=SC1091
-  os_family=$(source /etc/os-release && echo "$ID")
-  log_warning "OS is: $os_family"
-elif [ -z "$os_family" ]; then
-  log_error "Unable to identify OS"
-  exit 1
-fi
+source "$DOTFILES_DIR/lib/log.sh"
 
 declare -r playbook_file="${os_family}.yml"
 
 if [[ "$os_family" == 'alpine' ]]; then
   log_warning "Script is running in alpine, proceeding with silent mode."
+  export ANSIBLE_NO_WARNINGS=True
   ansible-playbook -i inventory "$playbook_file"
 elif ! tty -s; then
   log_warning "Script is running in unattended mode."
+  export ANSIBLE_STDOUT_CALLBACK=minimal
+  export ANSIBLE_NO_WARNINGS=True
   ansible-playbook -i inventory "$playbook_file"
 else
   log_info "Script is running in attended mode."

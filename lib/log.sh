@@ -1,5 +1,14 @@
 #!/bin/bash
+set -e
+set -u
 # log.sh - Shared logging library
+
+# Source the file only if it hasn't been sourced already
+if [ "${logger_loaded+x}" ]; then
+return 0
+fi
+
+declare -r logger_loaded=true
 
 # Define color codes
 RED='\033[0;31m'

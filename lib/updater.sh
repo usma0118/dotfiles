@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 set -u
-
-declare -r DOTFILES_DIR="$HOME/.dotfiles"
+if [ -z "${DOTFILES_DIR}" ]; then
+    declare -r DOTFILES_DIR="$HOME/.dotfiles"
+fi
 
 # Source the logging library
 # shellcheck disable=SC1091
@@ -17,7 +18,7 @@ if [ "$LOCAL" != "$REMOTE" ]; then
     log_info "There are new updates available for the repository."
 
     # Prompt the user to update
-    read -t 30 -p "Do you want to update? (Y/n) " -n 1 -r
+    read -t 10 -p "Do you want to update? (Y/n) " -n 1 -r
     echo    # move to a new line
     RESPONSE=${REPLY:-Y}
 
@@ -25,6 +26,6 @@ if [ "$LOCAL" != "$REMOTE" ]; then
         log_info "Updating the repository..."
         git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" pull origin main -q
     fi
-    # shellcheck disable=SC1091
-    source "$DOTFILES_DIR/bootstrap.sh"
+else
+    log_info "Running with latest commit: $(git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" rev-parse HEAD)"
 fi
