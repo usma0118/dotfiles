@@ -46,7 +46,9 @@ source "$DOTFILES_DIR/lib/utils.sh"
 # shellcheck disable=SC2154
 log_info "Running on OS: $os_family"
 if ! command -v ansible &>/dev/null ; then
-    if [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
+    if [ -n "$CODESPACES" ] || [ -n "$container" ]; then
+        abort "Make sure code space includes ansible"
+    elif [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
         if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
             sudo apt-add-repository ppa:ansible/ansible -y && apt update -y
         fi
