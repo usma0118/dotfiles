@@ -6,13 +6,14 @@ set -u
 # shellcheck disable=SC2292
 if [ -z "${BASH_VERSION:-}" ]
 then
-  abort "Bash is required to interpret this script."
+  echo "Bash is required to interpret this script."
+  exit 1
 fi
 declare DOTFILES_DIR
 if [[ "$0" == "/bin/bash" || "$0" == "bash" ]]; then
     DOTFILES_DIR="$HOME/.dotfiles"
 else
-    DOTFILES_DIR=$(realpath .)
+    DOTFILES_DIR="$(dirname "$(realpath "$0")")"
 fi
 
 
