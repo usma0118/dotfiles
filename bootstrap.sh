@@ -47,7 +47,7 @@ log_info "Running on OS: $os_family"
 if ! command -v ansible &>/dev/null ; then
     if [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
         if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
-            suod apt-add-repository ppa:ansible/ansible -y && apt update -y
+            sudo apt-add-repository ppa:ansible/ansible -y && apt update -y
         fi
         sudo apt-get install direnv ansible software-properties-common git -y
     elif [[ "$os_family" != 'alpine' ]]; then
@@ -64,6 +64,9 @@ source "$DOTFILES_DIR/lib/updater.sh"
 # check and ensure direnv is hooked to shell
 if ! command -v direnv &>/dev/null; then
     eval "$(direnv export "$0")"
+else
+ ANSIBLE_CONFIG=$(realpath ansible.cfg)
+ export ANSIBLE_CONFIG
 fi
 
 # shellcheck source=/dev/null
