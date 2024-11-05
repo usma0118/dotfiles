@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 set -u
-
 # Fail fast with a concise message when not using bash
 # Single brackets are needed here for POSIX compatibility
 # shellcheck disable=SC2292
@@ -9,8 +8,16 @@ if [ -z "${BASH_VERSION:-}" ]
 then
   abort "Bash is required to interpret this script."
 fi
+declare DOTFILES_DIR
+if [[ "$0" == "/bin/bash" || "$0" == "bash" ]]; then
+    DOTFILES_DIR="$HOME/.dotfiles"
+else
+    DOTFILES_DIR=$(realpath .)
+fi
+
+
 # Define variables
-DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+#DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
 
 GITHUB_USER=${GITHUB_USER:-usma0118}
 declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
@@ -35,6 +42,7 @@ fi
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/utils.sh"
 
+# shellcheck disable=SC2154
 log_info "Running on OS: $os_family"
 if ! command -v ansible &>/dev/null ; then
     if [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
@@ -69,10 +77,4 @@ popd
 if [[ "$os_family" == 'alpine' ]]; then
     log_info "Unset gpg.ssh.program"
     git config --global --unset gpg.ssh.program
-fi
-
-# check and ensure omz is reloaded
-if command -v omz &>/dev/null; then
-    log_info "reloading Omz"
-    omz reload
 fi
