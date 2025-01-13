@@ -1,0 +1,46 @@
+---
+- hosts:
+    - laptop
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Pausing for 5 seconds...
+      pause:
+        seconds: 5
+  roles:
+    # ensure sops key is loaded and placed
+    # install home-brew
+    # install 1password
+    # Personal
+    # signal, whatsapp, facebook messenger
+    # install vscode
+    # install iterm2
+    # install powercalc10 for iterm2
+    # install kubectl
+    # install sops
+    # ansible-lint
+    # - os.ubuntu.personal
+    # - developer.env
+- name: Install cask
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+    with_items:
+      - google-drive
+      - instaloader
+      - tradingview
+      - autodesk-fusion
+      - drawio
+      - orcaslicer
+      - bambu-studio
+      - dropbox
+      - firefox
+      - visual-studio-code
+      - discord
+      - vivaldi
+      - dozer
+      - iterm2
+      # - caskformula/caskformula/inkscape # fails
+    # brew install fluxcd/tap/flux and . <(flux completion zsh)
+    # git config --global core.excludesFile "~/.gitignore_global"
