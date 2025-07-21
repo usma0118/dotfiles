@@ -5,9 +5,13 @@ set -u
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/log.sh"
 
-declare -r playbook_file="${os_family}.yml"
+declare -r os_family_override="${OS_FAMILY_OVERRIDE:-}"
+declare -r playbook_file="${os_family_override:-${os_family}}.yml"
 
-if [[ "$os_family" == 'alpine' ]]; then
+if [[ -n "$os_family_override" ]]; then
+  log_info "Using OS family: $os_family with override"
+  ansible-playbook -i inventory "$playbook_file" -K
+elif [[ "$os_family" == 'alpine' ]]; then
   log_warning "Script is running in alpine, proceeding with silent mode."
   export ANSIBLE_NO_WARNINGS=True
   ansible-playbook -i inventory "$playbook_file"

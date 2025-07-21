@@ -9,7 +9,6 @@
       ansible.builtin.package:
         name: zsh
         state: present
-      become: true
     - name: Set user shell to zsh
       ansible.builtin.user:
         name: "{{ user }}"
@@ -17,20 +16,21 @@
 - name: Setup iterm2 and ohmyzsh
   when:
     - ansible_os_family == "Darwin"
-    - ohmyzsh_installed.stat.exists
+    - not ohmyzsh_installed.stat.exists
   block:
     - name: For Mac OS X install iterm2
       when: ansible_os_family == "Darwin"
       community.general.homebrew_cask:
         name: iterm2
         state: latest
-    - name: Download ohmyzsh
+    - name: Download ohmyzsh from git
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
         dest: /tmp/install_ohmyzsh.sh
         mode: "0755"
-    - name: Install ohmyzsh
+    - name: Install ohmyzsh installer
       ansible.builtin.command: /tmp/install_ohmyzsh.sh --unattended
+      register: ohmyzsh_result
       failed_when: "'FAILED' in ohmyzsh_result.stderr"
       when:
         - not ohmyzsh_installed.stat.exists
@@ -42,13 +42,27 @@
 - name: Installing Theme
   block:
     - name: Install PowerLevel10K (Theme)
+      when: ansible_os_family == "Darwin"
+      community.general.homebrew:
+        name: powerlevel10k
+        state: latest
+    - name: Add Powerlevel10k theme source to .zshrc (Darwin)
+      when: ansible_os_family == "Darwin"
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "source {{ lookup('pipe', 'brew --prefix') }}/share/powerlevel10k/powerlevel10k.zsh-theme"
+        insertafter: EOF
+
+    - name: Install PowerLevel10K (Theme) on non Darwin systems
+      when: ansible_os_family != "Darwin"
       ansible.builtin.git:
         repo: https://github.com/romkatv/powerlevel10k.git
         dest: /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k
         depth: 1
         single_branch: true
         version: master
-    - name: Symlink my powerlevel10k theme
+    - name: Symlink my powerlevel10k theme on non Darwin systems
+      when: ansible_os_family != "Darwin"
       ansible.builtin.file:
         src: /home/{{ user }}/.dotfiles/zshrc/themes/{{ item }}
         dest: /home/{{ user }}/.p10k.zsh
@@ -56,6 +70,7 @@
         force: true
       with_items:
         - dev.p10k.zsh
+
     - name: Install fonts (Powerline)
       when: ansible_os_family == "Darwin"
       block:
@@ -70,6 +85,7 @@
           ansible.builtin.file:
             path: /tmp/fonts/
             state: absent
+
 - name: Setup oh-my-zsh plugin zsh-syntax-highlighting
   block:
     - name: ZSH-syntax-highlighting on "Darwin"
@@ -77,11 +93,11 @@
         - ansible_os_family == "Darwin"
       community.general.homebrew:
         name: zsh-syntax-highlighting
-        state: present
+        state: latest
     - name: ZSH-syntax-highlighting on "Ubuntu"
       ansible.builtin.apt:
         name: zsh-syntax-highlighting
-        state: present
+        state: latest
       when:
         - ansible_os_family == "Ubuntu"
     - name: zsh-syntax-highlighting on "Alpine"
@@ -90,12 +106,15 @@
         repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
         dest: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
         depth: 1
+      when:
+        - ansible_os_family == "alpine"        
+
 - name: Setup oh-my-zsh plugin zsh-autosuggestions
   block:
     - name: ZSH-autosuggestions on "Darwin"
       community.general.homebrew:
         name: zsh-autosuggestions
-        state: present
+        state: latest
       when:
         - ansible_os_family == "Darwin"
     - name: zsh-autosuggestions on "Alpine"
@@ -104,6 +123,8 @@
         repo: https://github.com/zsh-users/zsh-autosuggestions.git
         dest: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
         depth: 1
+      when:
+        - ansible_os_family != "Darwin"        
     - name: ZSH-autosuggestions on "Ubuntu"
       ansible.builtin.apt:
         name: zsh-autosuggestions

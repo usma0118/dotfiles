@@ -9,16 +9,14 @@ then
   echo "Bash is required to interpret this script."
   exit 1
 fi
-declare DOTFILES_DIR
-if [[ "$0" == "/bin/bash" || "$0" == "bash" ]]; then
-    DOTFILES_DIR="$HOME/.dotfiles"
-else
-    DOTFILES_DIR="$(dirname "$(realpath "$0")")"
-fi
+# Use default value if DOTFILES_DIR is not set
+declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+# if [[ -z "${DOTFILES_DIR}" ]]; then
+#     DOTFILES_DIR="$HOME/.dotfiles"
+# fi
 
-
-# Define variables
-#DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+declare -r CODESPACES=${CODESPACES:-}
+declare -r container=${container:-}
 
 GITHUB_USER=${GITHUB_USER:-usma0118}
 declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
@@ -30,15 +28,19 @@ for env_var in "${env_variables[@]}"; do
     fi
 done
 
-# shellcheck disable=SC1091
-source "$DOTFILES_DIR/lib/log.sh"
 
-# Check if dotfiles directory exists, clone repo if not
-if [ ! -d "$DOTFILES_DIR" ]; then
-    log_warning "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
+# Ensure dotfiles directory exists and is up to date
+if [ ! -d "$DOTFILES_DIR/.git" ]; then
+    echo "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
     git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
+else
+    echo "Updating $DOTFILES_DIR from $DOTFILES_REPO"
+    git -C "$DOTFILES_DIR" pull --rebase --autostash
+    git -C "$DOTFILES_DIR" submodule update --init --recursive
 fi
 
+# shellcheck disable=SC1091
+source "$DOTFILES_DIR/lib/log.sh"
 # Install dependencies based on OS
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/utils.sh"
@@ -53,11 +55,16 @@ if ! command -v ansible &>/dev/null ; then
             sudo apt-add-repository ppa:ansible/ansible -y && apt update -y
         fi
         sudo apt-get install direnv ansible software-properties-common git -y
-    elif [[ "$os_family" != 'alpine' ]]; then
+    elif [[ "$os_family" != 'alpine' && "$os_family" != 'Darwin' ]]; then
         log_warning "Missing ansible, installing now.."
         sudo apk add ansible
-    elif [[ "$os_family" == 'darwin' ]]; then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    elif [[ "$os_family" == 'Darwin' ]]; then
+        if ! command -v brew &>/dev/null ; then
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        else
+            log_info "Home brew is already installed"
+        fi
+        brew install ansible
     fi
 fi
 
@@ -65,7 +72,7 @@ fi
 source "$DOTFILES_DIR/lib/updater.sh"
 
 # check and ensure direnv is hooked to shell
-if ! command -v direnv &>/dev/null; then
+if ! command -v direnv &>/dev/null ; then
     eval "$(direnv export "$0")"
 else
  ANSIBLE_CONFIG=$(realpath ansible.cfg)

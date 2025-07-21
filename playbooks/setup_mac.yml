@@ -25,7 +25,7 @@
 - name: Install cask
   community.general.homebrew_cask:
     name: "{{ item }}"
-    state: present
+    state: latest
     with_items:
       - google-drive
       - instaloader

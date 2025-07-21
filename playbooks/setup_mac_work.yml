@@ -1,0 +1,27 @@
+---
+- hosts:
+    - local
+  become: false
+  gather_facts: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Pausing for 5 seconds...
+      pause:
+        seconds: 5
+  roles:
+    - role: osx
+    - role: common
+      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: ohMyZSH
+      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+  tasks:
+    - name: Install home brew cask
+      community.general.homebrew_cask:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - tradingview
+        - drawio
+        - dropbox
+        - visual-studio-code
+        - iterm2
