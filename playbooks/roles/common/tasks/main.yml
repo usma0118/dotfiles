@@ -10,7 +10,7 @@
         state: link
         force: true
       with_items:
-        - .zshrc
+        # - .zshrc
         - .gitconfig
         - .gitignore_global
         - .aliases
