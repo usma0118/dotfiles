@@ -18,17 +18,3 @@
         dest: "{{ ansible_env.HOME }}/.exports"
         state: link
         force: true
-- name: Setup lsd dircolors
-  block:
-    - name: Create a directory if it does not exist
-      ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.config/lsd"
-        state: directory
-        mode: 755
-    - name: Symlink .dircolors
-      ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.dotfiles/.profile/.dircolors"
-        dest: "{{ ansible_env.HOME }}/.config/lsd/.dircolors"
-        state: link
-        force: true
-        mode: 600

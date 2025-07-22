@@ -1,0 +1,28 @@
+- name: Setup lsd dircolors
+  block:
+    - name: Install lsd on "Darwin"
+      community.general.homebrew_cask:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - lsd
+      when:
+        - ansible_os_family == "Darwin"
+    - name: Install lsd on "Ubuntu"
+      ansible.builtin.apt:
+        name: lsd
+        state: latest
+      when:
+        - ansible_os_family == "Ubuntu"
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/lsd"
+        state: directory
+        mode: 755
+    - name: Symlink .dircolors
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/.dotfiles/.profile/.dircolors"
+        dest: "{{ ansible_env.HOME }}/.config/lsd/.dircolors"
+        state: link
+        force: true
+        mode: 600

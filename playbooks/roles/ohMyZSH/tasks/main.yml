@@ -57,15 +57,15 @@
       when: ansible_os_family != "Darwin"
       ansible.builtin.git:
         repo: https://github.com/romkatv/powerlevel10k.git
-        dest: /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k
+        dest: "{{ ansible_env.HOME }}.oh-my-zsh/custom/themes/powerlevel10k"
         depth: 1
         single_branch: true
         version: master
     - name: Symlink my powerlevel10k theme on non Darwin systems
       when: ansible_os_family != "Darwin"
       ansible.builtin.file:
-        src: /home/{{ user }}/.dotfiles/zshrc/themes/{{ item }}
-        dest: /home/{{ user }}/.p10k.zsh
+        src: "{{ ansible_env.HOME }}/.dotfiles/zshrc/themes/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/.p10k.zsh"
         state: link
         force: true
       with_items:
@@ -104,7 +104,7 @@
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-        dest: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
         depth: 1
       when:
         - ansible_os_family == "alpine"        
@@ -121,7 +121,7 @@
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-autosuggestions.git
-        dest: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
         depth: 1
       when:
         - ansible_os_family != "Darwin"        
