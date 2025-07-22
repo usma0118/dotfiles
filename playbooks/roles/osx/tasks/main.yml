@@ -1,7 +1,24 @@
 ---
-- name: Cleanup Brew packages
-  when: ansible_os_family == "Darwin"
+# macOS-specific system tweaks and maintenance
+- name: Cleanup Homebrew packages
   ansible.builtin.command: brew cleanup
-- name: Save screenshots to Downloads
   when: ansible_os_family == "Darwin"
+  tags: [brew, cleanup]
+
+- name: Set screenshot save location to Downloads
   ansible.builtin.command: defaults write com.apple.screencapture location ~/Downloads
+  when: ansible_os_family == "Darwin"
+  tags: [screenshots]
+
+- name: Set US keyboard layout as default
+  ansible.builtin.command: defaults write com.apple.HIToolbox AppleCurrentKeyboardLayoutInputSourceID -string "com.apple.keylayout.US"
+  when: ansible_os_family == "Darwin"
+  tags: [keyboard]
+
+- name: Install fzf on Darwin
+  community.general.homebrew:
+    name: fzf
+    state: present
+  when: 
+    - ansible_os_family == "Darwin"
+  tags: [fzf]
