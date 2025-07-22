@@ -18,3 +18,9 @@
         dest: "{{ ansible_env.HOME }}/.exports"
         state: link
         force: true
+    - name: Install fzf on Darwin
+      community.general.homebrew:
+        name: fzf
+        state: present
+      when: 
+        - ansible_os_family == "Darwin"
