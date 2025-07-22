@@ -7,8 +7,6 @@ source "$DOTFILES_DIR/lib/log.sh"
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/utils.sh"
 
-log_info "Running ansible playbook for $os_family"
-
 declare -r os_family_override="${OS_FAMILY_OVERRIDE:-}"
 declare -r playbook_file="${os_family_override:-${os_family}}.yml"
 
