@@ -10,7 +10,6 @@ then
   exit 1
 fi
 # Use default value if DOTFILES_DIR is not set
-export DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/log.sh"
@@ -19,7 +18,7 @@ source "$DOTFILES_DIR/lib/log.sh"
 source "$DOTFILES_DIR/lib/utils.sh"
 # shellcheck disable=SC2154
 log_info "Running on OS: $os_family"
-
+export DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 declare -r CODESPACES=${CODESPACES:-}
 declare -r container=${container:-}
 
