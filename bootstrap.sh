@@ -10,6 +10,7 @@ then
   exit 1
 fi
 # Use default value if DOTFILES_DIR is not set
+export DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/log.sh"
@@ -22,8 +23,8 @@ log_info "Running on OS: $os_family"
 declare -r CODESPACES=${CODESPACES:-}
 declare -r container=${container:-}
 
-GITHUB_USER=${GITHUB_USER:-usma0118}
-declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
+declare -r GITHUB_USER=${GITHUB_USER:-usma0118}
+
 # Ensure required environment variables are set
 declare -r env_variables=("GITHUB_USER" "DOTFILES_REPO" "DOTFILES_DIR")
 
@@ -34,22 +35,8 @@ for env_var in "${env_variables[@]}"; do
 done
 
 
-# Ensure dotfiles directory exists and is up to date
-if [ ! -d "$DOTFILES_DIR/.git" ]; then
-    echo "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
-    git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
-else
-    echo "Checking if remote $DOTFILES_REPO is newer than local $DOTFILES_DIR"
-    LOCAL_HASH=$(git -C "$DOTFILES_DIR" rev-parse @)
-    REMOTE_HASH=$(git ls-remote "$DOTFILES_REPO" HEAD | awk '{print $1}')
-    if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
-        echo "Remote repo is newer. Updating $DOTFILES_DIR from $DOTFILES_REPO"
-        git -C "$DOTFILES_DIR" pull --rebase --autostash
-        git -C "$DOTFILES_DIR" submodule update --init --recursive
-    else
-        echo "Local repo is up to date."
-    fi
-fi
+# shellcheck disable=SC1091
+source "$DOTFILES_DIR/lib/updater.sh"
 
 if ! command -v ansible &>/dev/null ; then
     if [ -n "$CODESPACES" ] || [ -n "$container" ]; then
