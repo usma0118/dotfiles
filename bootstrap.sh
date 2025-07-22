@@ -18,11 +18,10 @@ source "$DOTFILES_DIR/lib/log.sh"
 source "$DOTFILES_DIR/lib/utils.sh"
 # shellcheck disable=SC2154
 log_info "Running on OS: $os_family"
+declare -r GITHUB_USER=${GITHUB_USER:-usma0118}
 export DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 declare -r CODESPACES=${CODESPACES:-}
 declare -r container=${container:-}
-
-declare -r GITHUB_USER=${GITHUB_USER:-usma0118}
 
 # Ensure required environment variables are set
 declare -r env_variables=("GITHUB_USER" "DOTFILES_REPO" "DOTFILES_DIR")
