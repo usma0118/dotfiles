@@ -20,6 +20,11 @@
         dest: "{{ ansible_env.HOME }}/.exports"
         state: link
         force: true
+    - name: Ensure .zshrc exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        state: touch
+        mode: '0644'
     - name: Source additional zsh files .aliases and .exports
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
