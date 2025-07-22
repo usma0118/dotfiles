@@ -9,16 +9,16 @@ then
   echo "Bash is required to interpret this script."
   exit 1
 fi
-
+# shellcheck disable=SC2154
+log_info "Running on OS: $os_family"
+# Use default value if DOTFILES_DIR is not set
+declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/log.sh"
 # Install dependencies based on OS
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/utils.sh"
-# shellcheck disable=SC2154
-log_info "Running on OS: $os_family"
-# Use default value if DOTFILES_DIR is not set
-declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+
 
 declare -r CODESPACES=${CODESPACES:-}
 declare -r container=${container:-}
