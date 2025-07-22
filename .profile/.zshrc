@@ -5,9 +5,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-[ -f ~/.aliases ] && source ~/.aliases
-[ -f ~/.exports ] && source ~/.exports
-
 plugins=(git
 	 direnv
  	 zsh-syntax-highlighting

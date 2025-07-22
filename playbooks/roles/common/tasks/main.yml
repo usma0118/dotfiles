@@ -18,3 +18,12 @@
         dest: "{{ ansible_env.HOME }}/.exports"
         state: link
         force: true
+    - name: Add Powerlevel10k theme source to .zshrc on Darwin
+      when: ansible_os_family == "Darwin"
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "[ -f ~/{{item}} ] && source {{item}}"
+        insertafter: EOF
+      with_items:
+        - .aliases
+        - .exports
