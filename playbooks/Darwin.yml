@@ -7,7 +7,7 @@
   pre_tasks:
     - name: Ensuring Homebrew Is Installed
       ansible.builtin.stat:
-        path: /usr/local/bin/brew
+        path: brew
       register: homebrew_check
     - name: Fail If Homebrew Is Not Installed and install_homebrew_if_missing Is False
       ansible.builtin.fail:
@@ -30,21 +30,20 @@
     # whatsapp via appstore,magnet, facebook messenger
     # signal
     # install vscode
-    # install powercalc10 and iterm2
     # install kubectl
     - name: Install osx components
       block:
         - name: Homebrew
           community.general.homebrew:
             name: "{{ item }}"
-            state: present
+            state: latest
             with_items:
               - podman
               # - multipass
         - name: Homebrew cask
           community.general.homebrew_cask:
             name: "{{ item }}"
-            state: present
+            state: latest
             with_items:
               - google-drive
               - instaloader
