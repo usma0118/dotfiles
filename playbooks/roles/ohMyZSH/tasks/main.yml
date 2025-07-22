@@ -29,10 +29,10 @@
       failed_when: "'FAILED' in ohmyzsh_result.stderr"
     - name: Ensure ZSH environment variable is set in .zshrc
       ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'ZSH="$HOME/.oh-my-zsh"'
-      insertafter: EOF
-      state: present
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: 'ZSH="$HOME/.oh-my-zsh"'
+        insertafter: EOF
+        state: present
     - name: Setup zsh as shell
       block:
         - name: Set user shell to zsh
