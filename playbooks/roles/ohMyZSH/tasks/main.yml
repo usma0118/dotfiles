@@ -28,8 +28,6 @@
       ansible.builtin.command: /tmp/install_ohmyzsh.sh --unattended
       register: ohmyzsh_result
       failed_when: "'FAILED' in ohmyzsh_result.stderr"
-      when:
-        - not ohmyzsh_installed.stat.exists
     - name: Ensure ZSH environment variable is set in .zshrc
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
@@ -43,21 +41,26 @@
             shell: /bin/zsh
 
 - name: Installing ZSH Theme
+  when:
+    - ansible_os_family in ["Darwin", "alpine"]
   block:
-    - name: Install PowerLevel10K (Theme) on Darwin
-      when: ansible_os_family == "Darwin"
+    - name: Install PowerLevel10K (Theme) on Darwin      
+      when:
+        - ansible_os_family == "Darwin"    
       community.general.homebrew:
         name: powerlevel10k
         state: latest
     - name: Add Powerlevel10k theme source to .zshrc on Darwin
-      when: ansible_os_family == "Darwin"
+      when:
+        - ansible_os_family == "Darwin"    
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "source {{ lookup('pipe', 'brew --prefix') }}/share/powerlevel10k/powerlevel10k.zsh-theme"
         insertafter: EOF
 
     - name: Install PowerLevel10K (Theme) on non-Darwin systems
-      when: ansible_os_family != "Darwin"
+      when:
+        - ansible_os_family != "Darwin"
       ansible.builtin.git:
         repo: https://github.com/romkatv/powerlevel10k.git
         dest: "{{ ansible_env.HOME }}.oh-my-zsh/custom/themes/powerlevel10k"

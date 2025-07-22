@@ -9,11 +9,11 @@
       pause:
         seconds: 5
   roles:
-    - role: osx
     - role: common
       user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
     - role: ohMyZSH
       user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: osx      
     - role: lsd
   tasks:
     - name: Install default apps
