@@ -5,8 +5,9 @@
     regexp: '^\s*IdentityAgent'
     line: |
       Host *
-      \tIdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+        IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
     create: yes
     insertafter: EOF
   when: 
     - ansible_os_family != 'Windows'
+    - ansible_os_family != "Alpine"

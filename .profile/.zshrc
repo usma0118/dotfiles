@@ -18,7 +18,7 @@ plugins=(git
 	 docker
 )
 
-unsetopt share_history
+# unsetopt share_history 
 
 autoload -U compinit; compinit
 

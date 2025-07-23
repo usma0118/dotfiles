@@ -2,6 +2,7 @@
 - name: Symlink dotfiles profile for Oh My Zsh
   when: 
     - ansible_os_family == "Darwin"
+    - ansible_os_family == "Alpine"
   block:
     - name: Symlink my dotfiles
       ansible.builtin.file:
@@ -21,11 +22,6 @@
         dest: "{{ ansible_env.HOME }}/.exports"
         state: link
         force: true
-    - name: Ensure .zshrc exists
-      ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.zshrc"
-        state: touch
-        mode: '0644'
     - name: Source additional zsh files .exports
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
@@ -43,9 +39,43 @@
         state: present
       with_items:
         - .aliases
+
+    - name: Initialize zsh completion
+      # This is to ensure that zsh completion is initialized
+      # This is useful for enabling command completion in zsh.
+      # This is not needed for Alpine Linux as it does not use zsh by default.
+      when: 
+        - ansible_os_family != "Alpine"
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "autoload -U compinit; compinit"
+        state: present
+    - name: Add initk8-configs.sh to .zshrc
+      # This is to ensure that initk8-configs.sh is sourced if it exists
+      # This is useful for setting up Kubernetes configurations
+      # and other environment variables that are needed for the shell.
+      # This is not needed for Alpine Linux as it does not use zsh by default.
+      when: 
+        - ansible_os_family != "Alpine"
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "[[ ! -f ~/.dotfiles/scripts/initk8-configs.sh ]] || source ~/.dotfiles/scripts/initk8-configs.sh"
+        state: present
+
 - name: Source ssh configuration
-  include_tasks: ssh.yml
+  import_tasks: ssh.yml
   when: 
     - ansible_env.HOME is defined
     - ansible_env.HOME != ''
   tags: ssh
+
+- name: Install fzf
+  import_tasks: fzf.yml
+  tags: fzf
+
+- name: Configure 1Password
+  import_tasks: 1Password.yml
+  when: 
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  tags: 1password

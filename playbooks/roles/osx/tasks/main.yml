@@ -14,18 +14,3 @@
   ansible.builtin.command: defaults write com.apple.HIToolbox AppleCurrentKeyboardLayoutInputSourceID -string "com.apple.keylayout.US"
   when: ansible_os_family == "Darwin"
   tags: [keyboard]
-
-- name: Installing FZF
-  when: 
-    - ansible_os_family == "Darwin"
-  tags: [fzf]
-  block:
-    - name: Install fzf on Darwin
-      community.general.homebrew:
-        name: fzf
-        state: present
-    - name: fzf key bindings and fuzzy completion
-      ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source <(fzf --zsh)"
-        insertafter: EOF
