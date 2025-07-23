@@ -30,8 +30,7 @@
     - name: Ensure ZSH environment variable is set in .zshrc
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: 'ZSH="$HOME/.oh-my-zsh"'
-        insertafter: EOF
+        line: 'export ZSH="$HOME/.oh-my-zsh"'
         state: present
     - name: Setup zsh as shell
       block:
@@ -55,8 +54,8 @@
         - ansible_os_family == "Darwin"    
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source {{ lookup('pipe', 'brew --prefix') }}/share/powerlevel10k/powerlevel10k.zsh-theme"
-        insertafter: EOF
+        line: "source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"
+        insertafter: "source $ZSH/oh-my-zsh.sh"
 
     - name: Install PowerLevel10K (Theme) on non-Darwin systems
       when:
@@ -75,11 +74,10 @@
         force: true
       with_items:
         - dev.p10k.zsh
-    # - name: Ensure PowerLevel10K environment variable is set in .zshrc
-    #   ansible.builtin.lineinfile:
-    #     path: "{{ ansible_env.HOME }}/.zshrc"
-    #     line: "ZSH_THEME=\"powerlevel10k/powerlevel10k\""
-    #     insertafter: BOF
+    - name: Ensure PowerLevel10K environment variable is set in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "ZSH_THEME=\"powerlevel10k/powerlevel10k\""
     # - name: configure powerlevel10k in .zshrc
     #   ansible.builtin.lineinfile:
     #     path: "{{ ansible_env.HOME }}/.zshrc"
@@ -113,8 +111,8 @@
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source {{ lookup('pipe', 'brew --prefix') }}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-        insertafter: EOF
+        line: "source $(brew --prefix)/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+        insertafter: "source $ZSH/oh-my-zsh.sh"
     - name: ZSH-syntax-highlighting on "Ubuntu"
       ansible.builtin.apt:
         name: zsh-syntax-highlighting
@@ -144,8 +142,8 @@
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source {{ lookup('pipe', 'brew --prefix') }}/zsh-autosuggestions/zsh-autosuggestions.zsh"
-        insertafter: EOF
+        line: "source $(brew --prefix)/zsh-autosuggestions/zsh-autosuggestions.zsh"
+        insertafter: "source $ZSH/oh-my-zsh.sh"
         state: present
     - name: zsh-autosuggestions on "Alpine"
       become: true
