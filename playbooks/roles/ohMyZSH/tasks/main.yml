@@ -74,15 +74,16 @@
         force: true
       with_items:
         - dev.p10k.zsh
+        - detailed.p10k.zsh
     - name: Ensure PowerLevel10K environment variable is set in .zshrc
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "ZSH_THEME=\"powerlevel10k/powerlevel10k\""
-    # - name: configure powerlevel10k in .zshrc
-    #   ansible.builtin.lineinfile:
-    #     path: "{{ ansible_env.HOME }}/.zshrc"
-    #     line: "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh"
-    #     insertafter: BOF
+    - name: configure powerlevel10k in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh"
+        insertafter: BOF
 
     - name: Install fonts (Powerline)
       when: ansible_os_family == "Darwin"
@@ -99,63 +100,5 @@
             path: /tmp/fonts/
             state: absent
 
-- name: Setup oh-my-zsh plugin zsh-syntax-highlighting
-  block:
-    - name: ZSH-syntax-highlighting on "Darwin"
-      when:
-        - ansible_os_family == "Darwin"
-      community.general.homebrew:
-        name: zsh-syntax-highlighting
-        state: latest
-    - name: source zsh-syntax-highlighting on "Darwin"
-      when: ansible_os_family == "Darwin"
-      ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-        insertafter: "source $ZSH/oh-my-zsh.sh"
-    - name: ZSH-syntax-highlighting on "Ubuntu"
-      ansible.builtin.apt:
-        name: zsh-syntax-highlighting
-        state: latest
-      when:
-        - ansible_os_family == "Ubuntu"
-        - ansible_distribution_version | version_compare('20.04', '>=')
-
-    - name: zsh-syntax-highlighting on "Alpine"
-      become: true
-      ansible.builtin.git:
-        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
-        depth: 1
-      when:
-        - ansible_os_family == "alpine"
-
-- name: Setup oh-my-zsh plugin zsh-autosuggestions
-  block:
-    - name: ZSH-autosuggestions on "Darwin"
-      community.general.homebrew:
-        name: zsh-autosuggestions
-        state: latest
-      when:
-        - ansible_os_family == "Darwin"
-    - name: source zsh-autosuggestions on "Darwin"
-      when: ansible_os_family == "Darwin"
-      ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-        insertafter: "source $ZSH/oh-my-zsh.sh"
-        state: present
-    - name: zsh-autosuggestions on "Alpine"
-      become: true
-      ansible.builtin.git:
-        repo: https://github.com/zsh-users/zsh-autosuggestions.git
-        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
-        depth: 1
-      when:
-        - ansible_os_family != "Darwin"        
-    - name: ZSH-autosuggestions on "Ubuntu"
-      ansible.builtin.apt:
-        name: zsh-autosuggestions
-        state: present
-      when:
-        - ansible_os_family == "Ubuntu"
+- name: Deploy ZSH plugins
+  import_tasks: plugins.yml

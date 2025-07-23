@@ -26,7 +26,7 @@
         path: "{{ ansible_env.HOME }}/.zshrc"
         state: touch
         mode: '0644'
-    - name: Source additional zsh files .aliases and .exports
+    - name: Source additional zsh files .exports
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "source {{ ansible_env.HOME }}/.dotfiles/zshrc/{{item}}"
@@ -35,7 +35,7 @@
       with_items:
         - .exports
 
-    - name: Source additional zsh files .aliases and .exports
+    - name: Source additional zsh files .aliases
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "source {{ ansible_env.HOME }}/.dotfiles/.profile/{{item}}"
@@ -43,3 +43,9 @@
         state: present
       with_items:
         - .aliases
+- name: Source ssh configuration
+  include_tasks: ssh.yml
+  when: 
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  tags: ssh

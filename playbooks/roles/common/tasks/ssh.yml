@@ -1,0 +1,12 @@
+---
+- name: Ensure SSH config has 1Password IdentityAgent
+  lineinfile:
+    path: ~/.ssh/config
+    regexp: '^\s*IdentityAgent'
+    line: |
+      Host *
+      \tIdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+    create: yes
+    insertafter: EOF
+  when: 
+    - ansible_os_family != 'Windows'
