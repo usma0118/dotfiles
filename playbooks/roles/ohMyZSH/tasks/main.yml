@@ -111,7 +111,7 @@
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source $(brew --prefix)/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+        line: "source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
         insertafter: "source $ZSH/oh-my-zsh.sh"
     - name: ZSH-syntax-highlighting on "Ubuntu"
       ansible.builtin.apt:
@@ -142,7 +142,7 @@
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source $(brew --prefix)/zsh-autosuggestions/zsh-autosuggestions.zsh"
+        line: "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
         insertafter: "source $ZSH/oh-my-zsh.sh"
         state: present
     - name: zsh-autosuggestions on "Alpine"
