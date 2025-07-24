@@ -70,8 +70,18 @@
   tags: ssh
 
 - name: Install fzf
+  when: 
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
   import_tasks: fzf.yml
-  tags: fzf
+  tags: tools
+
+- name: Install z
+  when: 
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  import_tasks: z.yml
+  tags: tools
 
 - name: Configure 1Password
   import_tasks: 1Password.yml

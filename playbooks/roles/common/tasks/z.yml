@@ -1,14 +1,14 @@
-- name: Installing FZF
+- name: Installing Z
   when: 
     - ansible_os_family == "Darwin"
-  tags: [fzf]
+  tags: [tools]
   block:
-    - name: Install fzf on Darwin
+    - name: Install Z on Darwin
       community.general.homebrew:
-        name: fzf
+        name: z
         state: latest
     - name: fzf key bindings and fuzzy completion
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "source <(fzf --zsh)"
+        line: "[ -f $(brew --prefix)/etc/profile.d/z.sh ] && source $(brew --prefix)/etc/profile.d/z.sh"
         insertafter: EOF
