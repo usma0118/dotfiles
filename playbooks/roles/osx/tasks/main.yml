@@ -1,9 +1,10 @@
 ---
 # macOS-specific system tweaks and maintenance
-- name: Cleanup Homebrew packages
-  ansible.builtin.command: brew cleanup
+
+- name: Disable automatic app updates
+  ansible.builtin.command: defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
   when: ansible_os_family == "Darwin"
-  tags: [brew, cleanup]
+  tags: [updates]
 
 - name: Set screenshot save location to Downloads
   ansible.builtin.command: defaults write com.apple.screencapture location ~/Downloads
