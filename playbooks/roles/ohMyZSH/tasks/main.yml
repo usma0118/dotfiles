@@ -64,27 +64,21 @@
         dest: "{{ ansible_env.HOME }}.oh-my-zsh/custom/themes/powerlevel10k"
         depth: 1
         version: master
-    - name: Symlink my powerlevel10k theme on non Darwin systems
-      when: ansible_os_family == "Alpine"
-      ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.dotfiles/zshrc/themes/{{ item }}"
-        dest: "{{ ansible_env.HOME }}/.p10k.zsh"
-        state: link
-        force: true
-      with_items:
-        - dev.p10k.zsh
-        - detailed.p10k.zsh
+
     - name: Ensure PowerLevel10K environment variable is set in .zshrc
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "ZSH_THEME=\"powerlevel10k/powerlevel10k\""
         state: present
+
     - name: configure powerlevel10k in .zshrc
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh"
-        insertafter: BOF
+        line: "[[ ! -f ~/.dotfiles/zshrc/themes/{{ item }} ]] || source ~/.dotfiles/zshrc/themes/{{ item }}"
+        insertafter: '^ZSH_THEME'
         state: present
+      with_items:
+        - dev.p10k.zsh
 
     - name: Install fonts (Powerline)
       when: ansible_os_family == "Darwin"
