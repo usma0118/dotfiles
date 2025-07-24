@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 export EDITOR="nano"
 export KUBE_EDITOR=$EDITOR
 export LC_ALL="en_US.UTF-8"

@@ -1,5 +1,5 @@
 - name: Installing Z
-  when: 
+  when:
     - ansible_os_family == "Darwin"
   tags: [tools]
   block:

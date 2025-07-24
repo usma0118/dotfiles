@@ -1,5 +1,5 @@
 - name: Installing FZF
-  when: 
+  when:
     - ansible_os_family == "Darwin"
   tags: [fzf]
   block:
