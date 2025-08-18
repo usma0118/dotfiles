@@ -94,6 +94,10 @@
           ansible.builtin.file:
             path: /tmp/fonts/
             state: absent
+- name: set zsh history configuration
+  when:
+    - ansible_os_family in ["Darwin", "Alpine"] and ohmyzsh_installed.stat.exists
+  import_tasks: hist.yml
 
 - name: Deploy ZSH plugins
   import_tasks: plugins.yml
