@@ -8,7 +8,7 @@
     - name: Pausing for 5 seconds...
       pause:
         seconds: 5
-  roles:
-    - os.ubuntu
-    - os.ubuntu.personal
-    - developer.env
+  roles: []
+    # - os.ubuntu
+    # - os.ubuntu.personal
+    # - developer.env

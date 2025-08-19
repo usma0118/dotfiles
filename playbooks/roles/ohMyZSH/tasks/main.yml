@@ -97,10 +97,10 @@
 - name: set zsh history configuration
   when:
     - ansible_os_family in ["Darwin", "Alpine"] and ohmyzsh_installed.stat.exists
-  import_tasks: hist.yml
+  ansible.builtin.import_tasks: hist.yml
 
 - name: Deploy ZSH plugins
-  import_tasks: plugins.yml
+  ansible.builtin.import_tasks: plugins.yml
 
 - name: Symlink dotfiles profile for Oh My Zsh
   when:
@@ -156,7 +156,7 @@
         state: present
 
 - name: Source ssh configuration
-  import_tasks: ssh.yml
+  ansible.builtin.import_tasks: ssh.yml
   when:
     - ansible_env.HOME is defined
     - ansible_env.HOME != ''
@@ -166,18 +166,18 @@
   when:
     - ansible_env.HOME is defined
     - ansible_env.HOME != ''
-  import_tasks: fzf.yml
+  ansible.builtin.import_tasks: fzf.yml
   tags: tools
 
 - name: Install z
   when:
     - ansible_env.HOME is defined
     - ansible_env.HOME != ''
-  import_tasks: z.yml
+  ansible.builtin.import_tasks: z.yml
   tags: tools
 
 - name: Configure 1Password
-  import_tasks: 1Password.yml
+  ansible.builtin.import_tasks: 1Password.yml
   when:
     - ansible_env.HOME is defined
     - ansible_env.HOME != ''

@@ -9,6 +9,12 @@
       pause:
         seconds: 5
   roles:
+    - role: common
+      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: ohMyZSH
+      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: osx
+    - role: lsd
     # ensure sops key is loaded and placed
     # install home-brew
     # install 1password
@@ -22,25 +28,22 @@
     # ansible-lint
     # - os.ubuntu.personal
     # - developer.env
-- name: Install cask
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: latest
-    with_items:
-      - google-drive
-      - instaloader
-      - tradingview
-      - autodesk-fusion
-      - drawio
-      - orcaslicer
-      - bambu-studio
-      - dropbox
-      - firefox
-      - visual-studio-code
-      - discord
-      - vivaldi
-      - dozer
-      - iterm2
-      # - caskformula/caskformula/inkscape # fails
-    # brew install fluxcd/tap/flux and . <(flux completion zsh)
-    # git config --global core.excludesFile "~/.gitignore_global"
+  tasks:
+    - name: Install cask apps
+      community.general.homebrew_cask:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - google-drive
+        - instaloader
+        - tradingview
+        - autodesk-fusion
+        - drawio
+        - bambu-studio
+        - dropbox
+        - firefox
+        - visual-studio-code
+        - vivaldi
+        - dozer
+      # brew install fluxcd/tap/flux and . <(flux completion zsh)
+      # git config --global core.excludesFile "~/.gitignore_global"

@@ -20,7 +20,7 @@
       community.general.homebrew_cask:
         name: "{{ item }}"
         state: latest
-      with_items:
+      loop:
         - tradingview
         - drawio
         # - dropbox ## Not using this on workdesk anymore.
