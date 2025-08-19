@@ -106,7 +106,7 @@
   when:
     - ansible_os_family in ["Darwin", "Alpine"] and ohmyzsh_installed.stat.exists
   block:
-    - name: Symlink my dotfiles
+    - name: Symlink gitconfig
       ansible.builtin.file:
         src: "{{ ansible_env.HOME }}/.dotfiles/.profile/{{ item }}"
         dest: "{{ ansible_env.HOME }}/{{ item }}"
@@ -117,7 +117,15 @@
         - .gitattributes
         - .gitignore_global
 
-    - name: Source additional files
+    - name: Source zshrc profile
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "source {{ ansible_env.HOME }}/.dotfiles/zshrc/{{item}}"
+        insertafter: EOF
+        state: present
+      with_items:
+        - .exports
+    - name: Source .aliases
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "source {{ ansible_env.HOME }}/.dotfiles/.profile/{{item}}"
@@ -125,8 +133,6 @@
         state: present
       with_items:
         - .aliases
-        - .exports
-
     - name: Initialize zsh completion
       # This is to ensure that zsh completion is initialized
       # This is useful for enabling command completion in zsh.
