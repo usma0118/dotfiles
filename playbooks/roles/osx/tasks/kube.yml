@@ -1,5 +1,6 @@
-- community.general.homebrew:
-    name: Install kubectl and flux
+- name: Install Kubernetes tools
+  community.general.homebrew:
+    name: "{{ item }}"
     state: latest
     loop:
       - kubectl
