@@ -1,8 +1,9 @@
+---
 - name: Install Kubernetes tools
   community.general.homebrew:
     name: "{{ item }}"
     state: latest
-    loop:
-      - kubectl
-      - flux
-    when: ansible_os_family == 'Darwin'
+  loop:
+    - kubectl
+    - flux
+  when: ansible_os_family == 'Darwin'
