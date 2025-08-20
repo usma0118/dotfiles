@@ -1,0 +1,7 @@
+- community.general.homebrew:
+    name: Install kubectl and flux
+    state: latest
+    loop:
+      - kubectl
+      - flux
+    when: ansible_os_family == 'Darwin'

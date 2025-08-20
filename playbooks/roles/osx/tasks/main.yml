@@ -15,3 +15,9 @@
   ansible.builtin.command: defaults write com.apple.HIToolbox AppleCurrentKeyboardLayoutInputSourceID -string "com.apple.keylayout.US"
   when: ansible_os_family == "Darwin"
   tags: [keyboard]
+
+- name: Install kube tools
+  when:
+    - ansible_env.HOME is defined
+  ansible.builtin.import_tasks: kube.yml
+  tags: devops
