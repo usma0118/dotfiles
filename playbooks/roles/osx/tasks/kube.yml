@@ -5,5 +5,5 @@
     state: latest
   loop:
     - kubectl
-    - flux
+    - fluxcd/tap/flux
   when: ansible_os_family == 'Darwin'
