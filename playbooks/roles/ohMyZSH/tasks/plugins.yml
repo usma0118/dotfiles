@@ -22,14 +22,14 @@
         dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
         depth: 1
       when:
-        - ansible_os_family == "alpine"        
+        - ansible_os_family == "alpine"
 
     - name: source zsh-syntax-highlighting on "Darwin"
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-        insertafter: "source $ZSH/oh-my-zsh.sh"
+        insertafter: "autoload -U compinit; compinit"
 
     - name: Ensure ~/.local/share/zsh/plugins directory exists on Alpine
       when:
@@ -70,7 +70,7 @@
         dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
         depth: 1
       when:
-        - ansible_os_family != "Darwin"        
+        - ansible_os_family != "Darwin"
     - name: ZSH-autosuggestions on "Ubuntu"
       ansible.builtin.apt:
         name: zsh-autosuggestions
