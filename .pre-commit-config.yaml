@@ -41,3 +41,9 @@ repos:
     rev: v2.1.1
     hooks:
       - id: forbid-secrets
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v25.8.1 # Use the desired version of ansible-lint
+    hooks:
+      - id: ansible-lint
+        files: \.(yaml|yml)$
+        verbose: true

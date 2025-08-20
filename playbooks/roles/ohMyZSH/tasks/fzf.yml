@@ -7,7 +7,7 @@
       community.general.homebrew:
         name: fzf
         state: latest
-    - name: fzf key bindings and fuzzy completion
+    - name: FZF key bindings and fuzzy completion
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "source <(fzf --zsh)"
