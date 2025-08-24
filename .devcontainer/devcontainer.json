@@ -10,5 +10,12 @@
 	  },
 	  "mounts": [
 		"source=bashhistory,target=/home/${containerUser}/.history,type=volume"
-	]
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"redhat.ansible"
+			]
+		}
+	}
 }
