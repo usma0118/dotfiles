@@ -1,0 +1,29 @@
+---
+- hosts:
+    - local
+  become: false
+  gather_facts: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Pausing for 5 seconds...
+      pause:
+        seconds: 5
+  roles:
+    - role: common
+      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: ohMyZSH
+      user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: osx
+    - role: lsd
+  tasks:
+    - name: Install default apps
+      community.general.homebrew_cask:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - tradingview
+        - drawio
+        # - dropbox ## Not using this on workdesk anymore.
+        - visual-studio-code
+        - iterm2
+        - signal

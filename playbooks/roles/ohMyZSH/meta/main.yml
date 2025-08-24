@@ -1,0 +1,11 @@
+---
+# Role metadata
+galaxy_info:
+  author: USMA0118
+  description: Install and configure Oh My Zsh with plugins and themes.
+  platforms:
+    - name: Alpine
+    - name: Ubuntu
+    - name: Darwin
+  license: MIT
+dependencies: []

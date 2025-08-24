@@ -1,61 +1,85 @@
 ---
+- name: Setup iterm2
+  when:
+    - ansible_os_family == "Darwin"
+  block:
+    - name: For Mac OS X install iterm2
+      community.general.homebrew_cask:
+        name: iterm2
+        state: latest
+
 - name: Check if Oh My Zsh is installed
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.oh-my-zsh"
   register: ohmyzsh_installed
-- name: Setup zsh as shell
-  block:
-    - name: Install zsh
-      ansible.builtin.package:
-        name: zsh
-        state: present
-      become: true
-    - name: Set user shell to zsh
-      ansible.builtin.user:
-        name: "{{ user }}"
-        shell: /bin/zsh
-- name: Setup iterm2 and ohmyzsh
+
+- name: Setup ohmyzsh
   when:
-    - ansible_os_family == "Darwin"
-    - ohmyzsh_installed.stat.exists
+    - ansible_os_family == "Darwin" and not ohmyzsh_installed.stat.exists
   block:
-    - name: For Mac OS X install iterm2
-      when: ansible_os_family == "Darwin"
-      community.general.homebrew_cask:
-        name: iterm2
-        state: latest
-    - name: Download ohmyzsh
+    - name: Install ohmyzsh via git
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
         dest: /tmp/install_ohmyzsh.sh
         mode: "0755"
-    - name: Install ohmyzsh
+    - name: Running ohmyzsh installer
       ansible.builtin.command: /tmp/install_ohmyzsh.sh --unattended
+      register: ohmyzsh_result
       failed_when: "'FAILED' in ohmyzsh_result.stderr"
-      when:
-        - not ohmyzsh_installed.stat.exists
-    - name: Cleanup directory
-      ansible.builtin.file:
-        path: /tmp/install_ohmyzsh.sh
-        state: absent
+    - name: Ensure ZSH environment variable is set in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: 'export ZSH="$HOME/.oh-my-zsh"'
+        state: present
+    - name: Setup zsh as shell
+      block:
+        - name: Set user shell to zsh
+          ansible.builtin.user:
+            name: "{{ user }}"
+            shell: /bin/zsh
 
-- name: Installing Theme
+- name: Installing ZSH Theme
+  when:
+    - ansible_os_family in ["Darwin", "Alpine"] and ohmyzsh_installed.stat.exists
   block:
-    - name: Install PowerLevel10K (Theme)
+    - name: Install PowerLevel10K (Theme) on Darwin
+      when:
+        - ansible_os_family == "Darwin"
+      community.general.homebrew:
+        name: powerlevel10k
+        state: latest
+    - name: Add Powerlevel10k theme source to .zshrc on Darwin
+      when:
+        - ansible_os_family == "Darwin"
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"
+        insertafter: "source $ZSH/oh-my-zsh.sh"
+
+    - name: Install PowerLevel10K (Theme) on non-Darwin systems
+      when:
+        - ansible_os_family == "Alpine"
       ansible.builtin.git:
         repo: https://github.com/romkatv/powerlevel10k.git
-        dest: /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k
+        dest: "{{ ansible_env.HOME }}.oh-my-zsh/custom/themes/powerlevel10k"
         depth: 1
-        single_branch: true
         version: master
-    - name: Symlink my powerlevel10k theme
-      ansible.builtin.file:
-        src: /home/{{ user }}/.dotfiles/zshrc/themes/{{ item }}
-        dest: /home/{{ user }}/.p10k.zsh
-        state: link
-        force: true
+
+    - name: Ensure PowerLevel10K environment variable is set in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "ZSH_THEME=\"powerlevel10k/powerlevel10k\""
+        state: present
+
+    - name: configure powerlevel10k in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "[[ ! -f ~/.dotfiles/zshrc/themes/{{ item }} ]] || source ~/.dotfiles/zshrc/themes/{{ item }}"
+        insertafter: '^ZSH_THEME'
+        state: present
       with_items:
         - dev.p10k.zsh
+
     - name: Install fonts (Powerline)
       when: ansible_os_family == "Darwin"
       block:
@@ -70,43 +94,91 @@
           ansible.builtin.file:
             path: /tmp/fonts/
             state: absent
-- name: Setup oh-my-zsh plugin zsh-syntax-highlighting
+- name: set zsh history configuration
+  when:
+    - ansible_os_family in ["Darwin", "Alpine"] and ohmyzsh_installed.stat.exists
+  ansible.builtin.import_tasks: hist.yml
+
+- name: Deploy ZSH plugins
+  ansible.builtin.import_tasks: plugins.yml
+
+- name: Symlink dotfiles profile for Oh My Zsh
+  when:
+    - ansible_os_family in ["Darwin", "Alpine"] and ohmyzsh_installed.stat.exists
   block:
-    - name: ZSH-syntax-highlighting on "Darwin"
-      when:
-        - ansible_os_family == "Darwin"
-      community.general.homebrew:
-        name: zsh-syntax-highlighting
+    - name: Symlink gitconfig
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/.dotfiles/.profile/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/{{ item }}"
+        state: link
+        force: true
+      with_items:
+        - .gitconfig
+        - .gitattributes
+        - .gitignore_global
+
+    - name: Source zshrc profile
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "source {{ ansible_env.HOME }}/.dotfiles/zshrc/{{item}}"
+        insertafter: EOF
         state: present
-    - name: ZSH-syntax-highlighting on "Ubuntu"
-      ansible.builtin.apt:
-        name: zsh-syntax-highlighting
+      with_items:
+        - .exports
+    - name: Source .aliases
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "source {{ ansible_env.HOME }}/.dotfiles/.profile/{{item}}"
+        insertafter: EOF
         state: present
+      with_items:
+        - .aliases
+    - name: Initialize zsh completion
+      # This is to ensure that zsh completion is initialized
+      # This is useful for enabling command completion in zsh.
+      # This is not needed for Alpine Linux as it does not use zsh by default.
       when:
-        - ansible_os_family == "Ubuntu"
-    - name: zsh-syntax-highlighting on "Alpine"
-      become: true
-      ansible.builtin.git:
-        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-        dest: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-        depth: 1
-- name: Setup oh-my-zsh plugin zsh-autosuggestions
-  block:
-    - name: ZSH-autosuggestions on "Darwin"
-      community.general.homebrew:
-        name: zsh-autosuggestions
+        - ansible_os_family != "Alpine"
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "autoload -U compinit; compinit"
         state: present
+    - name: Add initk8-configs.sh to .zshrc
+      # This is to ensure that initk8-configs.sh is sourced if it exists
+      # This is useful for setting up Kubernetes configurations
+      # and other environment variables that are needed for the shell.
+      # This is not needed for Alpine Linux as it does not use zsh by default.
       when:
-        - ansible_os_family == "Darwin"
-    - name: zsh-autosuggestions on "Alpine"
-      become: true
-      ansible.builtin.git:
-        repo: https://github.com/zsh-users/zsh-autosuggestions.git
-        dest: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-        depth: 1
-    - name: ZSH-autosuggestions on "Ubuntu"
-      ansible.builtin.apt:
-        name: zsh-autosuggestions
+        - ansible_os_family != "Alpine"
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "[[ ! -f ~/.dotfiles/scripts/initk8-configs.sh ]] || source ~/.dotfiles/scripts/initk8-configs.sh"
         state: present
-      when:
-        - ansible_os_family == "Ubuntu"
+
+- name: Source ssh configuration
+  ansible.builtin.import_tasks: ssh.yml
+  when:
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  tags: ssh
+
+- name: Install fzf
+  when:
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  ansible.builtin.import_tasks: fzf.yml
+  tags: tools
+
+- name: Install z
+  when:
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  ansible.builtin.import_tasks: z.yml
+  tags: tools
+
+- name: Configure 1Password
+  ansible.builtin.import_tasks: 1Password.yml
+  when:
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  tags: 1password

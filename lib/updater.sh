@@ -4,11 +4,15 @@ set -u
 if [ -z "${DOTFILES_DIR}" ]; then
     declare -r DOTFILES_DIR="$HOME/.dotfiles"
 fi
-
 # Source the logging library
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/log.sh"
 
+
+if [ ! -d "$DOTFILES_DIR/.git" ]; then
+    echo "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
+    git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1 -q
+fi
 # Fetch the latest changes from the remote repository
 git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" fetch origin main -q
 # Check if the local main branch is behind the remote main branch

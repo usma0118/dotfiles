@@ -1,0 +1,12 @@
+---
+- name: Ensure SSH config has 1Password IdentityAgent block
+  blockinfile:
+    path: ~/.ssh/config
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: 1Password IdentityAgent"
+    block: |
+      Host *
+        IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+    create: yes
+  when:
+    - ansible_os_family != 'Windows'
+    - ansible_os_family != "Alpine"

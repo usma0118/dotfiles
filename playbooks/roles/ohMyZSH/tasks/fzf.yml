@@ -1,0 +1,14 @@
+- name: Installing FZF
+  when:
+    - ansible_os_family == "Darwin"
+  tags: [fzf]
+  block:
+    - name: Install fzf on Darwin
+      community.general.homebrew:
+        name: fzf
+        state: latest
+    - name: FZF key bindings and fuzzy completion
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "source <(fzf --zsh)"
+        insertafter: EOF

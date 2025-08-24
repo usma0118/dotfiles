@@ -14,7 +14,7 @@ declare -r utils_loaded=true
 if [ -f /etc/os-release ]; then
     # shellcheck disable=SC1091
     . /etc/os-release  # Source the file to access variables
-    export os_family="$ID"
+    export os_family="${ID,,}"
 else
     # Fallback to uname if /etc/os-release is not available
     # shellcheck disable=SC2155

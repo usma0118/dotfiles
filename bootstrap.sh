@@ -9,63 +9,59 @@ then
   echo "Bash is required to interpret this script."
   exit 1
 fi
-declare DOTFILES_DIR
-if [[ "$0" == "/bin/bash" || "$0" == "bash" ]]; then
-    DOTFILES_DIR="$HOME/.dotfiles"
-else
-    DOTFILES_DIR="$(dirname "$(realpath "$0")")"
-fi
+# Use default value if DOTFILES_DIR is not set
+declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+# shellcheck disable=SC1091
+source "$DOTFILES_DIR/lib/log.sh"
+# Install dependencies based on OS
+# shellcheck disable=SC1091
+source "$DOTFILES_DIR/lib/utils.sh"
+# shellcheck disable=SC2154
+log_info "Running on OS: $os_family"
+declare -r GITHUB_USER=${GITHUB_USER:-usma0118}
+export DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
+declare -r CODESPACES=${CODESPACES:-}
+declare -r container=${container:-}
 
-
-# Define variables
-#DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
-
-GITHUB_USER=${GITHUB_USER:-usma0118}
-declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 # Ensure required environment variables are set
 declare -r env_variables=("GITHUB_USER" "DOTFILES_REPO" "DOTFILES_DIR")
+
 for env_var in "${env_variables[@]}"; do
     if [ -z "${!env_var}" ]; then
         abort "Error: $env_var is not set"
     fi
 done
 
+
 # shellcheck disable=SC1091
-source "$DOTFILES_DIR/lib/log.sh"
+source "$DOTFILES_DIR/lib/updater.sh"
 
-# Check if dotfiles directory exists, clone repo if not
-if [ ! -d "$DOTFILES_DIR" ]; then
-    log_warning "Cloning $DOTFILES_REPO into $DOTFILES_DIR"
-    git clone "$DOTFILES_REPO" "$DOTFILES_DIR" --recurse-submodules --depth=1
-fi
-
-# Install dependencies based on OS
-# shellcheck disable=SC1091
-source "$DOTFILES_DIR/lib/utils.sh"
-
-# shellcheck disable=SC2154
-log_info "Running on OS: $os_family"
 if ! command -v ansible &>/dev/null ; then
     if [ -n "$CODESPACES" ] || [ -n "$container" ]; then
         abort "Make sure code space includes ansible"
     elif [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
         if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
-            sudo apt-add-repository ppa:ansible/ansible -y && apt update -y
+            apt-add-repository ppa:ansible/ansible -y && apt update -y
         fi
-        sudo apt-get install direnv ansible software-properties-common git -y
+        apt-get install direnv ansible software-properties-common git -y
     elif [[ "$os_family" != 'alpine' ]]; then
         log_warning "Missing ansible, installing now.."
-        sudo apk add ansible
-    elif [[ "$os_family" == 'darwin' ]]; then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        apk add ansible
+    elif [[ "$os_family" == 'Darwin' ]]; then
+        if ! command -v brew &>/dev/null ; then
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        else
+            log_info "Home brew is already installed"
+        fi
+        brew install ansible
     fi
 fi
 
 # shellcheck disable=SC1091
-source "$DOTFILES_DIR/lib/updater.sh"
+#source "$DOTFILES_DIR/lib/updater.sh"
 
 # check and ensure direnv is hooked to shell
-if ! command -v direnv &>/dev/null; then
+if ! command -v direnv &>/dev/null ; then
     eval "$(direnv export "$0")"
 else
  ANSIBLE_CONFIG=$(realpath ansible.cfg)
@@ -74,7 +70,7 @@ fi
 
 # shellcheck source=/dev/null
 pushd "$DOTFILES_DIR/playbooks"
-log_info "Running playbooks"
+
 # shellcheck disable=SC1091
 source "./install"
 log_info "Rollout completed"

@@ -1,0 +1,7 @@
+---
+user: "{{ ansible_user | default(ansible_env.USER) }}"
+ohmyzsh_theme: "powerlevel10k"
+ohmyzsh_plugins:
+  - git
+  - zsh-syntax-highlighting
+  - zsh-autosuggestions

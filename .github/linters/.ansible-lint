@@ -2,3 +2,8 @@
 # .ansible-lint
 warn_list:
   - unnamed-task
+  - command-instead-of-module
+  - command-instead-of-shell
+exclude_paths:
+  - .cache/
+  - .github/
