@@ -45,6 +45,7 @@
         marker: "# {mark} ANSIBLE z"
         block: |
           # Load 'z' (directory jumper)
+          export _Z_DATA="$HOME/.config/.z"
           [ -f "$HOME/.z/z.sh" ] && . "$HOME/.z/z.sh"
 
           # zsh completion for 'z'

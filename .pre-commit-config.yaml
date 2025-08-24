@@ -46,4 +46,4 @@ repos:
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
-        verbose: true
+        verbose: false
