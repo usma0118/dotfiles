@@ -14,7 +14,6 @@
     - role: ohMyZSH
       user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
     - role: osx
-    - role: lsd
   tasks:
     - name: Install default apps
       community.general.homebrew_cask:

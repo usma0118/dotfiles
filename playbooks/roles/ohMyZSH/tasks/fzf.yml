@@ -1,12 +1,18 @@
 - name: Installing FZF
-  when:
-    - ansible_os_family == "Darwin"
   tags: [fzf]
   block:
     - name: Install fzf on Darwin
       community.general.homebrew:
         name: fzf
         state: latest
+      when:
+        - ansible_os_family == "Darwin"
+    - name: Install fzf on "Debian"
+      ansible.builtin.apt:
+        name: lsd
+        state: latest
+      when:
+        - ansible_os_family == "Ubuntu"
     - name: FZF key bindings and fuzzy completion
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
