@@ -15,14 +15,14 @@
       when:
         - ansible_os_family == "Ubuntu"
         - ansible_distribution_version | version_compare('20.04', '>=')
-    - name: zsh-syntax-highlighting on "Alpine"
+    - name: zsh-syntax-highlighting on DevContainer
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
         dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
         depth: 1
       when:
-        - ansible_os_family == "alpine"
+        - ansible_env.container is defined
 
     - name: source zsh-syntax-highlighting on "Darwin"
       when: ansible_os_family == "Darwin"
@@ -31,16 +31,16 @@
         line: "source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
         insertafter: "autoload -U compinit; compinit"
 
-    - name: Ensure ~/.local/share/zsh/plugins directory exists on Alpine
+    - name: Ensure ~/.local/share/zsh/plugins directory exists on DevContainer
       when:
-        - ansible_os_family == "Alpine"
+        - ansible_env.container is defined
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/.local/share/zsh/plugins"
         state: directory
         mode: "0755"
-    - name: Symlink powerlevel10k to local zsh plugins on Alpine
+    - name: Symlink powerlevel10k to local zsh plugins on DevContainer
       when:
-        - ansible_os_family == "Alpine"
+        - ansible_env.container is defined
       ansible.builtin.file:
         src: /usr/share/zsh/plugins/powerlevel10k
         dest: "{{ ansible_env.HOME }}/.local/share/zsh/plugins/powerlevel10k"
@@ -63,14 +63,14 @@
         line: "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
         insertafter: "source $ZSH/oh-my-zsh.sh"
         state: present
-    - name: zsh-autosuggestions on "Alpine"
+    - name: zsh-autosuggestions on DevContainer
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-autosuggestions.git
         dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
         depth: 1
       when:
-        - ansible_os_family != "Darwin"
+        - ansible_env.container is defined
     - name: ZSH-autosuggestions on "Ubuntu"
       ansible.builtin.apt:
         name: zsh-autosuggestions

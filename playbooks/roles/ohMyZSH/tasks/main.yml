@@ -138,7 +138,7 @@
       # This is useful for enabling command completion in zsh.
       # This is not needed for Alpine Linux as it does not use zsh by default.
       when:
-        - ansible_os_family != "Alpine"
+        - ansible_env.container is not defined and ansible_os_family not in ["Windows"]
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "autoload -U compinit; compinit"

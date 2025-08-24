@@ -1,14 +1,57 @@
 - name: Installing Z
-  when:
-    - ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin"
   tags: [tools]
+  become: false
   block:
     - name: Install Z on Darwin
       community.general.homebrew:
         name: z
         state: latest
+
     - name: Z key bindings and fuzzy completion
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "[ -f $(brew --prefix)/etc/profile.d/z.sh ] && source $(brew --prefix)/etc/profile.d/z.sh"
+        create: yes
         insertafter: EOF
+        line: '[ -f "$(brew --prefix)/etc/profile.d/z.sh" ] && source "$(brew --prefix)/etc/profile.d/z.sh"'
+
+- name: Install z.sh on Linux based systems
+  when: ansible_os_family not in ["Darwin", "Windows"]
+  become: false
+  block:
+    - name: Check if z.sh exists
+      stat:
+        path: "{{ ansible_env.HOME }}/.z/z.sh"
+      register: z_script
+
+    - name: Ensure ~/.z exists
+      file:
+        path: "{{ ansible_env.HOME }}/.z"
+        state: directory
+        mode: '0755'
+      when: not z_script.stat.exists
+
+    - name: Download z.sh
+      get_url:
+        url: https://raw.githubusercontent.com/rupa/z/refs/heads/master/z.sh
+        dest: "{{ ansible_env.HOME }}/.z/z.sh"
+        mode: '0644'
+      when: not z_script.stat.exists
+
+    - name: Source z and add zsh completion (once)
+      blockinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        create: yes
+        marker: "# {mark} ANSIBLE z"
+        block: |
+          # Load 'z' (directory jumper)
+          [ -f "$HOME/.z/z.sh" ] && . "$HOME/.z/z.sh"
+
+          # zsh completion for 'z'
+          if [ -n "${ZSH_VERSION-}" ]; then
+            if ! typeset -p _comps >/dev/null 2>&1; then
+              autoload -Uz compinit && compinit -i
+            fi
+            (( $+functions[_z] )) && compdef _z z
+          fi
+      when: not z_script.stat.exists
