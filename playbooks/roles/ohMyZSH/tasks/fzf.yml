@@ -11,7 +11,6 @@
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "source <(fzf --zsh)"
-        marker: "# {mark} ANSIBLE fzf"
         insertafter: EOF
       when:
         - ansible_os_family == "Darwin"        
