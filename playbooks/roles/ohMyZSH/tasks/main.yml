@@ -70,6 +70,8 @@
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "ZSH_THEME=\"powerlevel10k/powerlevel10k\""
         state: present
+      when:
+        - ansible_env.container is not defined        
 
     - name: configure powerlevel10k in .zshrc
       ansible.builtin.lineinfile:
@@ -79,6 +81,8 @@
         state: present
       with_items:
         - dev.p10k.zsh
+      when:
+        - ansible_env.container is defined
 
     - name: Install fonts (Powerline)
       when: ansible_os_family == "Darwin"
