@@ -1,0 +1,20 @@
+- name: Installing tree
+  tags: [packages, tree]
+  block:
+    - name: Install tree on Darwin
+      when: ansible_os_family == "Darwin"
+      block:
+        - name: Ensure tree is installed
+          community.general.homebrew:
+            name: tree
+            state: present
+        - name: Ensure tree is latest
+          community.general.homebrew:
+            name: tree
+            state: latest
+    - name: Install tree on Linux based systems
+      ansible.builtin.package:
+        name: tree
+        state: latest
+      when: ansible_os_family in ["Debian", "RedHat", "Suse", "Archlinux", "Alpine"]
+      become: true

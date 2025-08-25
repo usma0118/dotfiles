@@ -169,16 +169,21 @@
   ansible.builtin.import_tasks: fzf.yml
   tags: tools
 
-- name: Install z
-  when:
-    - ansible_env.HOME is defined
-    - ansible_env.HOME != ''
-  ansible.builtin.import_tasks: z.yml
-  tags: tools
-
 - name: Configure 1Password
   ansible.builtin.import_tasks: 1Password.yml
   when:
     - ansible_env.HOME is defined
     - ansible_env.HOME != ''
   tags: 1password
+
+## Plugins
+- name: Install tree
+  ansible.builtin.import_tasks: plugins/tree.yml
+  tags: plugins
+
+- name: Install z
+  when:
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  ansible.builtin.import_tasks: plugins/z.yml
+  tags: tools
