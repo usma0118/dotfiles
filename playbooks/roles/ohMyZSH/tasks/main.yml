@@ -179,11 +179,18 @@
 ## Plugins
 - name: Install tree
   ansible.builtin.import_tasks: plugins/tree.yml
-  tags: plugins
+  tags: [plugins]
 
 - name: Install z
   when:
     - ansible_env.HOME is defined
     - ansible_env.HOME != ''
   ansible.builtin.import_tasks: plugins/z.yml
-  tags: tools
+  tags: [plugins]
+
+- name: Install z
+  when:
+    - ansible_env.HOME is defined
+    - ansible_env.HOME != ''
+  ansible.builtin.import_tasks: plugins/kube.yml
+  tags: [plugins,kube]

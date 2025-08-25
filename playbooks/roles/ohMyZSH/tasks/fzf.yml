@@ -13,7 +13,7 @@
         line: "source <(fzf --zsh)"
         insertafter: EOF
       when:
-        - ansible_os_family == "Darwin"        
+        - ansible_os_family == "Darwin"
     - name: Install fzf on "Debian"
       ansible.builtin.apt:
         name: fzf
