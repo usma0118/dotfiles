@@ -213,13 +213,6 @@
         line: "autoload -U compinit; compinit"
         state: present
 
-    - name: Add initk8-configs.sh to .zshrc (non-Alpine)
-      when: ansible_os_family != "Alpine"
-      ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
-        line: "[[ ! -f ~/.dotfiles/scripts/initk8-configs.sh ]] || source ~/.dotfiles/scripts/initk8-configs.sh"
-        state: present
-
 # --- SSH / tools / integrations ---
 - name: Source ssh configuration
   ansible.builtin.import_tasks: ssh.yml
