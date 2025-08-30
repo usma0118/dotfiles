@@ -7,15 +7,9 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	  ,"postStartCommand": {
 		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}"
-	  },
-	  "mounts": [
-		"source=bashhistory,target=/home/${containerUser}/.history,type=volume"
-	],
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"redhat.ansible"
-			]
-		}
-	}
+	  }
+	//   ,"mounts": [
+	// 	"source=bashhistory,target=/home/${containerUser}/.history,type=volume"
+	// ]
+	// }
 }
