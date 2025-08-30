@@ -1,0 +1,9 @@
+---
+# tasks file for kube
+- name: Add initk8-configs.sh to .zshrc
+  when:
+    - ansible_env.container is not defined
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    line: "[[ ! -f $HOME/.dotfiles/scripts/initk8-configs.sh ]] || source $HOME/.dotfiles/scripts/initk8-configs.sh"
+    state: present

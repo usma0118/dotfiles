@@ -12,7 +12,7 @@ declare -r playbook_file="${os_family_override:-${os_family}}.yml"
 
 if [[ -n "$os_family_override" ]]; then
   log_info "Using OS family: $os_family with override"
-  ansible-playbook -i inventory "$playbook_file" -K
+  ansible-playbook -i inventory "$playbook_file"
 elif [[ "$os_family" == 'alpine' ]]; then
   log_warning "Script is running in alpine, proceeding with silent mode."
   export ANSIBLE_NO_WARNINGS=True

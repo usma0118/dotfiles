@@ -6,24 +6,19 @@
   when: ansible_os_family == "Darwin"
   changed_when: false
   check_mode: yes
-  tags: [updates]
+  tags: [mac,updates]
 
 - name: Set screenshot save location to Downloads
   ansible.builtin.command: defaults write com.apple.screencapture location ~/Downloads
   when: ansible_os_family == "Darwin"
   changed_when: false
   check_mode: yes
-  tags: [screenshots]
+  tags: [mac,screenshots]
 
 - name: Set US keyboard layout as default
   ansible.builtin.command: defaults write com.apple.HIToolbox AppleCurrentKeyboardLayoutInputSourceID -string "com.apple.keylayout.US"
   when: ansible_os_family == "Darwin"
   changed_when: false
   check_mode: yes
-  tags: [keyboard]
+  tags: [mac,keyboard]
 
-- name: Install kube tools
-  when:
-    - ansible_env.HOME is defined
-  ansible.builtin.import_tasks: kube.yml
-  tags: devops
