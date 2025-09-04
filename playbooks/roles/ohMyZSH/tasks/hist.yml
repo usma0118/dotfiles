@@ -1,7 +1,9 @@
+---
 - name: Ensure ZSH history options are set in .zshrc
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: ~/.zshrc
     marker: "# {mark} ANSIBLE MANAGED ZSH HISTORY"
+    insertafter: EOF
     block: |
       # ZSH History Configuration
       # These options optimize history size, sharing, and duplicate handling.

@@ -19,18 +19,18 @@
 
     - name: Find zsh binary
       ansible.builtin.shell: command -v zsh
-      register: zsh_path
+      register: ohMyZSH_zsh_path
       changed_when: false
 
     - name: Fail if zsh not found
       ansible.builtin.fail:
         msg: "zsh not found in PATH after install."
-      when: zsh_path.stdout | trim == ""
+      when: ohMyZSH_zsh_path.stdout | trim == ""
 
-    - name: Ensure {{ zsh_path.stdout }} is listed in /etc/shells
+    - name: Ensure {{ ohMyZSH_zsh_path.stdout }} is listed in /etc/shells
       ansible.builtin.lineinfile:
         path: /etc/shells
-        line: "{{ zsh_path.stdout }}"
+        line: "{{ ohMyZSH_zsh_path.stdout }}"
         state: present
 
     - name: Get current login shell from /etc/passwd
@@ -41,8 +41,8 @@
     - name: Change default shell to zsh if not already
       ansible.builtin.user:
         name: "{{ ansible_user_id }}"
-        shell: "{{ zsh_path.stdout }}"
-      when: user_info.stdout.split(':')[-1] | trim != zsh_path.stdout
+        shell: "{{ ohMyZSH_zsh_path.stdout }}"
+      when: user_info.stdout.split(':')[-1] | trim != ohMyZSH_zsh_path.stdout
 
 # --- Default shell to zsh (macOS) ---
 - name: Ensure zsh is default shell (macOS)
@@ -50,14 +50,14 @@
   become: true
   block:
     - name: Find zsh binary
-      ansible.builtin.shell: command -v zsh
-      register: darwin_zsh
+      ansible.builtin.command: which zsh
+      register: ohMyZSH_darwin_zsh
       changed_when: false
 
-    - name: Ensure {{ darwin_zsh.stdout }} is listed in /etc/shells
+    - name: Ensure {{ ohMyZSH_darwin_zsh.stdout }} is listed in /etc/shells
       ansible.builtin.lineinfile:
         path: /etc/shells
-        line: "{{ darwin_zsh.stdout }}"
+        line: "{{ ohMyZSH_darwin_zsh.stdout }}"
         state: present
 
     - name: Get current login shell (macOS)
@@ -82,7 +82,7 @@
     - not ohmyzsh_installed.stat.exists
   block:
     - name: Download Oh My Zsh installer
-      ansible.builtin.get_url:
+      ansible.builtin.ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
         dest: /tmp/install_ohmyzsh.sh
         mode: "0755"

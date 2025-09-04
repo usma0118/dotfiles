@@ -11,7 +11,8 @@
     - name: Z key bindings and fuzzy completion
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        create: yes
+        create: true
+        mode: '0644'
         insertafter: EOF
         line: '[ -f "$(brew --prefix)/etc/profile.d/z.sh" ] && source "$(brew --prefix)/etc/profile.d/z.sh"'
 
@@ -20,28 +21,29 @@
   become: false
   block:
     - name: Check if z.sh exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ ansible_env.HOME }}/.z/z.sh"
-      register: z_script
+      register: ohMyZSH_z_script
 
     - name: Ensure ~/.z exists
       file:
         path: "{{ ansible_env.HOME }}/.z"
         state: directory
         mode: '0755'
-      when: not z_script.stat.exists
+      when: not ohMyZSH_z_script.stat.exists
 
     - name: Download z.sh
-      get_url:
+      ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/rupa/z/refs/heads/master/z.sh
         dest: "{{ ansible_env.HOME }}/.z/z.sh"
         mode: '0644'
-      when: not z_script.stat.exists
+      when: not ohMyZSH_z_script.stat.exists
 
     - name: Source z and add zsh completion (once)
-      blockinfile:
+      ansible.builtin.blockinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        create: yes
+        create: true
+        mode: "0600"
         marker: "# {mark} ANSIBLE z"
         block: |
           # Load 'z' (directory jumper)
@@ -55,4 +57,4 @@
             fi
             (( $+functions[_z] )) && compdef _z z
           fi
-      when: not z_script.stat.exists
+      when: not ohMyZSH_z_script.stat.exists

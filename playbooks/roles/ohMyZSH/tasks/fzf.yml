@@ -21,9 +21,10 @@
       when:
         - ansible_os_family == "Ubuntu"
     - name: Ensure fzf init lines exist once in ~/.zshrc
-      blockinfile:
+      ansible.builtin.blockinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
-        create: yes
+        create: true
+        mode: "0600"
         marker: "# {mark} ANSIBLE fzf"
         block: |
           [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh

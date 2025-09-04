@@ -18,11 +18,10 @@
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/.config/lsd"
         state: directory
-        mode: 755
+        mode: "0755"
     - name: Symlink .dircolors
       ansible.builtin.file:
         src: "{{ ansible_env.HOME }}/.dotfiles/.profile/.dircolors"
         dest: "{{ ansible_env.HOME }}/.config/lsd/.dircolors"
         state: link
         force: true
-        mode: 600

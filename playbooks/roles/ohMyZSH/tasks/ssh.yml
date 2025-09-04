@@ -1,12 +1,13 @@
 ---
 - name: Ensure SSH config has 1Password IdentityAgent block
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: ~/.ssh/config
     marker: "# {mark} ANSIBLE MANAGED BLOCK: 1Password IdentityAgent"
     block: |
       Host *
         IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-    create: yes
+    create: true
+    mode: "0600"
     insertbefore: BOF
   when:
     - ansible_os_family == 'Darwin'

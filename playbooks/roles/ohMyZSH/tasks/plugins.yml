@@ -24,7 +24,7 @@
       when:
         - ansible_env.container is defined
 
-    - name: source zsh-syntax-highlighting on "Darwin"
+    - name: Source zsh-syntax-highlighting on "Darwin"
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"

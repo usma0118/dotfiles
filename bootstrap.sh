@@ -57,9 +57,6 @@ if ! command -v ansible &>/dev/null ; then
     fi
 fi
 
-# shellcheck disable=SC1091
-#source "$DOTFILES_DIR/lib/updater.sh"
-
 # check and ensure direnv is hooked to shell
 if ! command -v direnv &>/dev/null ; then
     eval "$(direnv export "$0")"
