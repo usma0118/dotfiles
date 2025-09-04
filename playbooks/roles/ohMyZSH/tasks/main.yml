@@ -23,10 +23,10 @@
       changed_when: false
       failed_when: ohMyZSH_zsh_path.rc != 0
 
-    - name: Ensure {{ ohMyZSH_zsh_path.stdout }} is listed in /etc/shells
+    - name: Ensure zsh path is listed in /etc/shells (Linux)
       ansible.builtin.lineinfile:
         path: /etc/shells
-        line: "{{ ohMyZSH_zsh_path.stdout }}"
+        line: "{{ ohMyZSH_zsh_path.stdout | trim }}"
         state: present
 
     - name: Get current login shell from /etc/passwd
@@ -44,17 +44,17 @@
 - name: Ensure zsh is default shell (macOS)
   when: ansible_os_family == "Darwin"
   block:
-    - name: Find zsh binary
+    - name: Find zsh binary (macOS)
       ansible.builtin.command: which zsh
       register: ohMyZSH_darwin_zsh
       changed_when: false
       failed_when: ohMyZSH_darwin_zsh.rc != 0
 
-    - name: Ensure {{ ohMyZSH_darwin_zsh.stdout }} is listed in /etc/shells
+    - name: Ensure zsh path is listed in /etc/shells (macOS)
       become: true
       ansible.builtin.lineinfile:
         path: /etc/shells
-        line: "{{ ohMyZSH_darwin_zsh.stdout }}"
+        line: "{{ ohMyZSH_darwin_zsh.stdout | trim }}"
         state: present
 
     - name: Get current login shell (macOS)
@@ -100,24 +100,20 @@
         create: true
         mode: "0644"
 
+    - name: Re-check if Oh My Zsh is installed (refresh var)
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+      register: ohmyzsh_installed
+
 # --- Theme / fonts ---
 - name: Installing ZSH Theme (Powerlevel10k)
   when:
-    - ansible_os_family in ["Darwin", "Alpine", "Debian"]
-    - (ohmyzsh_installed.stat.exists or ansible_os_family == "Darwin")
+    - (ohmyzsh_installed.stat.exists and ansible_os_family in ["Darwin", "Alpine", "Debian"])
   block:
     - name: Install Powerlevel10k (Darwin via Homebrew)
       when: ansible_os_family == "Darwin"
       community.general.homebrew:
         name: powerlevel10k
-        state: present
-
-    - name: Add Powerlevel10k theme source to .zshrc on Darwin
-      when: ansible_os_family == "Darwin"
-      ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
-        insertafter: '^source \$ZSH/oh-my-zsh\.sh$'
-        line: 'source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme'
         state: present
 
     - name: Install Powerlevel10k (Debian/Alpine via git)
@@ -128,6 +124,14 @@
         depth: 1
         update: false
         version: HEAD
+
+    - name: Add Powerlevel10k theme source to .zshrc on Darwin
+      when: ansible_os_family == "Darwin"
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        insertafter: '^source \$ZSH/oh-my-zsh\.sh$'
+        line: 'source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme'
+        state: present
 
     - name: Ensure Powerlevel10k is the active theme
       ansible.builtin.lineinfile:
@@ -156,7 +160,7 @@
 # --- History tuning ---
 - name: Set zsh history configuration
   when:
-    - ansible_os_family in ["Darwin", "Alpine", "Debian"]
+    - ansible_os_family in ["Darwin", "Linux"]
     - ohmyzsh_installed.stat.exists
   ansible.builtin.import_tasks: hist.yml
 
@@ -166,6 +170,7 @@
 
 # --- Dotfiles linking & zshrc includes ---
 - name: Symlink dotfiles and source profiles (Oh My Zsh present)
+  become: false
   when:
     - ansible_os_family in ["Darwin", "Alpine"]
     - ohmyzsh_installed.stat.exists

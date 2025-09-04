@@ -9,11 +9,11 @@
       when:
         - ansible_os_family == "Darwin"
     - name: Install lsd on "Ubuntu"
-      ansible.builtin.apt:
+      ansible.builtin.package:
         name: lsd
-        state: latest
+        state: present
       when:
-        - ansible_os_family == "Ubuntu"
+        - ansible_os_family not in ["Darwin", "Windows"]
     - name: Create a directory if it does not exist
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/.config/lsd"

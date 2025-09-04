@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 set -u
+set -o pipefail
 # Fail fast with a concise message when not using bash
 # Single brackets are needed here for POSIX compatibility
 # shellcheck disable=SC2292
@@ -25,7 +26,7 @@ declare -r container=${container:-}
 
 # Ensure required environment variables are set
 declare -r env_variables=("GITHUB_USER" "DOTFILES_REPO" "DOTFILES_DIR")
-
+export REMOTE_USER="${ANSIBLE_REMOTE_USER:-${SUDO_USER:-${USER}}}"
 for env_var in "${env_variables[@]}"; do
     if [ -z "${!env_var}" ]; then
         abort "Error: $env_var is not set"
