@@ -48,4 +48,3 @@
               - google-drive
               - instaloader
               - tradingview
-        #brew install fluxcd/tap/flux and . <(flux completion zsh)

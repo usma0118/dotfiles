@@ -1,0 +1,52 @@
+- name: Install Powerline fonts
+  when: ansible_os_family == "Darwin"
+  become: false
+  block:
+    - name: Check if any Powerline fonts already exist
+      ansible.builtin.find:
+        paths:
+          - "{{ ansible_env.HOME }}/Library/Fonts"
+          - "/Library/Fonts"
+        patterns:
+          - "*Powerline*.ttf"
+          - "*Powerline*.otf"
+        file_type: file
+      register: ohmyzsh_powerline_fonts
+
+    - name: Install Powerline fonts (clone + run installer)
+      when: (ohmyzsh_powerline_fonts.matched | default(0)) | int == 0
+      block:
+        - name: Clone Powerline fonts repo # noqa latest[git]
+          ansible.builtin.git:
+            repo: https://github.com/powerline/fonts.git
+            dest: /tmp/powerline-fonts
+            depth: 1
+            single_branch: true
+            update: false
+
+        - name: Run installer
+          ansible.builtin.command: bash install.sh
+          args:
+            chdir: /tmp/powerline-fonts
+
+        - name: Cleanup fonts directory
+          ansible.builtin.file:
+            path: /tmp/powerline-fonts
+            state: absent
+        - name: Install Meslo Nerd Font via Homebrew (idempotent)
+          community.general.homebrew_cask:
+            name: font-meslo-lg-nerd-font
+            state: present
+          vars:
+            ansible_homebrew_taps:
+              - homebrew/cask-fonts
+
+- name: Install Powerlevel10k fonts
+  when: ansible_os_family in ["Ubuntu", "Debian", "Alpine"]
+  become: true
+  block:
+    - name: Install via package manager
+      ansible.builtin.package:
+        name: fonts-powerline
+        state: present
+        update_cache: true

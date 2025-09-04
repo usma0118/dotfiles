@@ -11,7 +11,7 @@
     - name: ZSH-syntax-highlighting on "Ubuntu"
       ansible.builtin.apt:
         name: zsh-syntax-highlighting
-        state: latest
+        state: present
       when:
         - ansible_os_family == "Ubuntu"
         - ansible_distribution_version | version_compare('20.04', '>=')

@@ -23,21 +23,21 @@
     - name: Check if z.sh exists
       ansible.builtin.stat:
         path: "{{ ansible_env.HOME }}/.z/z.sh"
-      register: ohMyZSH_z_script
+      register: ohmyzsh_z_script
 
     - name: Ensure ~/.z exists
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/.z"
         state: directory
         mode: '0755'
-      when: not ohMyZSH_z_script.stat.exists
+      when: not ohmyzsh_z_script.stat.exists
 
     - name: Download z.sh
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/rupa/z/refs/heads/master/z.sh
         dest: "{{ ansible_env.HOME }}/.z/z.sh"
         mode: '0644'
-      when: not ohMyZSH_z_script.stat.exists
+      when: not ohmyzsh_z_script.stat.exists
 
     - name: Source z and add zsh completion (once)
       ansible.builtin.blockinfile:
@@ -57,4 +57,4 @@
             fi
             (( $+functions[_z] )) && compdef _z z
           fi
-      when: not ohMyZSH_z_script.stat.exists
+      when: not ohmyzsh_z_script.stat.exists

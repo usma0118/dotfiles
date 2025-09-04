@@ -1,5 +1,6 @@
 ---
 - hosts: local
+  name: Debian Playbook
   vars:
     user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
   roles:

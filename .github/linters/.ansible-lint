@@ -1,5 +1,6 @@
 ---
 # .ansible-lint
+profile: safety
 warn_list:
   - unnamed-task
   - command-instead-of-module
