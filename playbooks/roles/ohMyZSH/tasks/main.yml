@@ -82,7 +82,7 @@
     - not ohmyzsh_installed.stat.exists
   block:
     - name: Download Oh My Zsh installer
-      ansible.builtin.ansible.builtin.get_url:
+      ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
         dest: /tmp/install_ohmyzsh.sh
         mode: "0755"

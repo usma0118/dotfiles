@@ -10,7 +10,7 @@
         msg: "This playbook is intended for macOS only."
       when: ansible_facts['os_family'] != "Darwin"
     - name: Pausing for 5 seconds...
-      pause:
+      ansible.builtin.pause:
         seconds: 5
 
   tasks:
