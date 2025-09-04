@@ -47,7 +47,6 @@
 # --- Default shell to zsh (macOS) ---
 - name: Ensure zsh is default shell (macOS)
   when: ansible_os_family == "Darwin"
-  become: true
   block:
     - name: Find zsh binary
       ansible.builtin.command: which zsh
@@ -66,6 +65,7 @@
       changed_when: false
 
     - name: Change default shell to zsh if not already (macOS)
+      become: true
       ansible.builtin.command: chsh -s "{{ darwin_zsh.stdout }}" "{{ ansible_user_id }}"
       when: darwin_shell.stdout is not search(darwin_zsh.stdout)
 

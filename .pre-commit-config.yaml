@@ -1,4 +1,8 @@
 ---
+ci:
+  # This section is specific to pre-commit.ci, telling it to create a pull request
+  # to update the linter version tag every month.
+  autoupdate_schedule: weekly
 fail_fast: false
 
 exclude: |
