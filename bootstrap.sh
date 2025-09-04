@@ -44,17 +44,17 @@ if ! command -v ansible &>/dev/null ; then
         if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
             apt-add-repository ppa:ansible/ansible -y && apt update -y
         fi
-        apt-get install direnv ansible software-properties-common git -y
-    elif [[ "$os_family" != 'alpine' ]]; then
+        apt-get install direnv ansible-core software-properties-common git -y
+    elif [[ "$os_family" == 'alpine' ]]; then
         log_warning "Missing ansible, installing now.."
-        apk add ansible
+        apk add ansible-core
     elif [[ "$os_family" == 'Darwin' ]]; then
         if ! command -v brew &>/dev/null ; then
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         else
             log_info "Home brew is already installed"
         fi
-        brew install ansible
+        brew install ansible-core git
     fi
 fi
 
@@ -65,6 +65,8 @@ else
  ANSIBLE_CONFIG=$(realpath ansible.cfg)
  export ANSIBLE_CONFIG
 fi
+
+#TODO: Install ansible requirements
 
 # shellcheck source=/dev/null
 pushd "$DOTFILES_DIR/playbooks"
