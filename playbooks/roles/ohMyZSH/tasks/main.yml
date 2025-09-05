@@ -19,14 +19,14 @@
 
     - name: Find zsh binary (no shell)
       ansible.builtin.command: which zsh
-      register: ohMyZSH_zsh_path
+      register: ohmyzsh_zsh_path
       changed_when: false
-      failed_when: ohMyZSH_zsh_path.rc != 0
+      failed_when: ohmyzsh_zsh_path.rc != 0
 
     - name: Ensure zsh path is listed in /etc/shells (Linux)
       ansible.builtin.lineinfile:
         path: /etc/shells
-        line: "{{ ohMyZSH_zsh_path.stdout | trim }}"
+        line: "{{ ohmyzsh_zsh_path.stdout | trim }}"
         state: present
 
     - name: Get current login shell from /etc/passwd
@@ -37,8 +37,8 @@
     - name: Change default shell to zsh if not already
       ansible.builtin.user:
         name: "{{ ansible_user_id }}"
-        shell: "{{ ohMyZSH_zsh_path.stdout | trim }}"
-      when: user_info.stdout.split(':')[-1] | trim != (ohMyZSH_zsh_path.stdout | trim)
+        shell: "{{ ohmyzsh_zsh_path.stdout | trim }}"
+      when: user_info.stdout.split(':')[-1] | trim != (ohmyzsh_zsh_path.stdout | trim)
 
 # --- Default shell to zsh (macOS) ---
 - name: Ensure zsh is default shell (macOS)
@@ -46,38 +46,43 @@
   block:
     - name: Find zsh binary (macOS)
       ansible.builtin.command: which zsh
-      register: ohMyZSH_darwin_zsh
+      register: ohmyzsh_darwin_zsh
       changed_when: false
-      failed_when: ohMyZSH_darwin_zsh.rc != 0
+      failed_when: ohmyzsh_darwin_zsh.rc != 0
 
     - name: Ensure zsh path is listed in /etc/shells (macOS)
       become: true
       ansible.builtin.lineinfile:
         path: /etc/shells
-        line: "{{ ohMyZSH_darwin_zsh.stdout | trim }}"
+        line: "{{ ohmyzsh_darwin_zsh.stdout | trim }}"
         state: present
 
     - name: Get current login shell (macOS)
       ansible.builtin.command: dscl . -read /Users/{{ ansible_user_id }} UserShell
-      register: darwin_shell
+      register: ohmyzsh_darwin_shell
       changed_when: false
 
     - name: Change default shell to zsh if not already (macOS)
       become: true
-      ansible.builtin.command: chsh -s "{{ ohMyZSH_darwin_zsh.stdout | trim }}" "{{ ansible_user_id }}"
-      when: darwin_shell.stdout is not search(ohMyZSH_darwin_zsh.stdout | trim)
+      ansible.builtin.command: chsh -s "{{ ohmyzsh_darwin_zsh.stdout | trim }}" "{{ ansible_user_id }}"
+      when: ohmyzsh_darwin_shell.stdout is not search(ohmyzsh_darwin_zsh.stdout | trim)
 
 # --- Oh My Zsh detection ---
 - name: Check if Oh My Zsh is installed
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.oh-my-zsh"
   register: ohmyzsh_installed
+  changed_when: false
+  failed_when: false
+- name: Set presence flag for Oh My Zsh
+  ansible.builtin.set_fact:
+    ohmyzsh_present: "{{ (ohmyzsh_installed.stat.exists | default(false)) | bool }}"
 
 # --- Oh My Zsh install (macOS) ---
 - name: Setup Oh My Zsh (macOS)
   when:
     - ansible_os_family == "Darwin"
-    - not ohmyzsh_installed.stat.exists
+    - not ohmyzsh_present
   block:
     - name: Download Oh My Zsh installer
       ansible.builtin.get_url:
@@ -108,7 +113,7 @@
 # --- Theme / fonts ---
 - name: Installing ZSH Theme (Powerlevel10k)
   when:
-    - (ohmyzsh_installed.stat.exists and ansible_os_family in ["Darwin", "Alpine", "Debian"])
+    - (ohmyzsh_present and ansible_os_family in ["Darwin", "Alpine", "Debian"])
   block:
     - name: Install Powerlevel10k (Darwin via Homebrew)
       when: ansible_os_family == "Darwin"
@@ -161,27 +166,10 @@
 - name: Set zsh history configuration
   when:
     - ansible_os_family in ["Darwin", "Linux"]
-    - ohmyzsh_installed.stat.exists
+    - ohmyzsh_present
   ansible.builtin.import_tasks: hist.yml
 
 # --- Plugins (common) ---
 - name: Deploy ZSH plugins
   ansible.builtin.import_tasks: plugins.yml
-
-# --- Dotfiles linking & zshrc includes ---
-- name: Symlink dotfiles and source profiles (Oh My Zsh present)
-  become: false
-  when:
-    - ansible_os_family in ["Darwin", "Alpine"]
-    - ohmyzsh_installed.stat.exists
-  block:
-    - name: Symlink git dotfiles
-      ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.dotfiles/.profile/{{ item }}"
-        dest: "{{ ansible_env.HOME }}/{{ item }}"
-        state: link
-        force: true
-      loop:
-        - .gitconfig
-        - .gitignore_global
-        - .gitattributes
+  when: ohmyzsh_present

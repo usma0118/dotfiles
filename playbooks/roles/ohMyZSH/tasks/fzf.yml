@@ -4,7 +4,7 @@
     - name: Install fzf on Darwin
       community.general.homebrew:
         name: fzf
-        state: latest
+        state: present
       when:
         - ansible_os_family == "Darwin"
     - name: FZF key bindings and fuzzy completion
@@ -17,7 +17,7 @@
     - name: Install fzf on "Debian"
       ansible.builtin.apt:
         name: fzf
-        state: latest
+        state: present
       when:
         - ansible_os_family == "Ubuntu"
     - name: Ensure fzf init lines exist once in ~/.zshrc

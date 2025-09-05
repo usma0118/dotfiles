@@ -1,0 +1,4 @@
+creation_rules:
+  - path_regex: ansible/vars/git_config\.sops\.yaml$
+    encrypted_regex: '^(global|system|local)(\.|$)'
+    age: ["age1vz7h3n8avwrjmylch2ez0qaa2yx0nevugy5h6prgu5qmamxtk5ts579yth"]

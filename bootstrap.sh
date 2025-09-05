@@ -1,82 +1,97 @@
-#!/bin/bash
-set -e
-set -u
-set -o pipefail
-# Fail fast with a concise message when not using bash
-# Single brackets are needed here for POSIX compatibility
-# shellcheck disable=SC2292
-if [ -z "${BASH_VERSION:-}" ]
-then
-  echo "Bash is required to interpret this script."
-  exit 1
-fi
-# Use default value if DOTFILES_DIR is not set
-declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+#!/usr/bin/env bash
+set -euo pipefail
+
+# --- tiny prelude (needed BEFORE sourcing libs) ---
+_abort(){ echo "ERROR: $*" >&2; exit 1; }
+_have(){ command -v "$1" >/dev/null 2>&1; }
+
+# Defaults / env
+DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+GITHUB_USER="${GITHUB_USER:-usma0118}"
+DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
+CODESPACES="${CODESPACES:-}"
+CONTAINER_ENV="${container:-}"        # some envs export 'container'
+export REMOTE_USER="${ANSIBLE_REMOTE_USER:-${SUDO_USER:-${USER}}}"
+
+# Ensure required files exist before sourcing
+[ -r "$DOTFILES_DIR/lib/log.sh" ]   || _abort "Missing $DOTFILES_DIR/lib/log.sh"
+[ -r "$DOTFILES_DIR/lib/utils.sh" ] || _abort "Missing $DOTFILES_DIR/lib/utils.sh"
+
+# --- libraries (define abort/have properly; will shadow the tiny ones) ---
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/log.sh"
-# Install dependencies based on OS
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/utils.sh"
-# shellcheck disable=SC2154
-log_info "Running on OS: $os_family"
-declare -r GITHUB_USER=${GITHUB_USER:-usma0118}
-export DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
-declare -r CODESPACES=${CODESPACES:-}
-declare -r container=${container:-}
 
-# Ensure required environment variables are set
-declare -r env_variables=("GITHUB_USER" "DOTFILES_REPO" "DOTFILES_DIR")
-export REMOTE_USER="${ANSIBLE_REMOTE_USER:-${SUDO_USER:-${USER}}}"
-for env_var in "${env_variables[@]}"; do
-    if [ -z "${!env_var}" ]; then
-        abort "Error: $env_var is not set"
-    fi
-done
-
-
-# shellcheck disable=SC1091
-source "$DOTFILES_DIR/lib/updater.sh"
-
-if ! command -v ansible &>/dev/null ; then
-    if [ -n "$CODESPACES" ] || [ -n "$container" ]; then
-        abort "Make sure code space includes ansible"
-    elif [[ "$os_family" == 'debian' || "$os_family" == 'ubuntu' ]]; then
-        if ! grep -q "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
-            apt-add-repository ppa:ansible/ansible -y && apt update -y
-        fi
-        apt-get install direnv ansible-core software-properties-common git -y
-    elif [[ "$os_family" == 'alpine' ]]; then
-        log_warning "Missing ansible, installing now.."
-        apk add ansible-core
-    elif [[ "$os_family" == 'Darwin' ]]; then
-        if ! command -v brew &>/dev/null ; then
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        else
-            log_info "Home brew is already installed"
-        fi
-        brew install ansible-core git
-    fi
+# sudo helper
+SUDO=""
+if [ "${EUID:-$(id -u)}" -ne 0 ]; then
+  if have sudo; then SUDO="sudo"; else abort "This script needs root or sudo"; fi
 fi
 
-# check and ensure direnv is hooked to shell
-if ! command -v direnv &>/dev/null ; then
-    eval "$(direnv export "$0")"
+# utils.sh exports lowercase os_family
+log_info "Running on OS: ${os_family:-unknown}"
+
+# Install Ansible if missing
+if ! have ansible || ! have ansible-playbook ; then
+  case "$os_family" in
+    ubuntu)
+      $SUDO apt-get update -y
+      $SUDO apt-get install -y software-properties-common git direnv
+      if ! grep -Rqs "ansible/ansible" /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null; then
+        $SUDO add-apt-repository -y ppa:ansible/ansible
+        $SUDO apt-get update -y
+      fi
+      $SUDO apt-get install -y ansible-core
+      ;;
+    debian)
+      $SUDO apt-get update -y
+      $SUDO apt-get install -y ansible-core git direnv
+      ;;
+    alpine)
+      log_warning "Installing Ansible on Alpine…"
+      if apk info -e ansible-core >/dev/null 2>&1; then
+        $SUDO apk add --no-cache ansible-core git direnv
+      else
+        $SUDO apk add --no-cache python3 py3-pip git direnv
+        python3 -m pip install --upgrade --no-cache-dir pip
+        python3 -m pip install --no-cache-dir ansible-core
+      fi
+      ;;
+    darwin)
+      if ! have brew; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      else
+        log_info "Homebrew already installed"
+      fi
+      brew install ansible git direnv
+      ;;
+    *)
+      abort "Unsupported OS family: ${os_family}"
+      ;;
+  esac
+fi
+
+# Point Ansible at project config if present
+if [ -f "$DOTFILES_DIR/playbooks/ansible.cfg" ]; then
+  export ANSIBLE_CONFIG="$DOTFILES_DIR/playbooks/ansible.cfg"
+fi
+
+# Load direnv for this shell only if present
+if have direnv && [ -f "$DOTFILES_DIR/playbooks/.envrc" ]; then
+  # shellcheck disable=SC1090
+  eval "$(direnv export bash)"
+fi
+
+# Run the playbook installer
+pushd "$DOTFILES_DIR/playbooks" >/dev/null || abort "cd failed: $DOTFILES_DIR/playbooks"
+trap 'popd >/dev/null || true' EXIT
+
+if [ -x ./install ]; then
+  ./install
 else
- ANSIBLE_CONFIG=$(realpath ansible.cfg)
- export ANSIBLE_CONFIG
+  # shellcheck disable=SC1091
+  source ./install
 fi
 
-#TODO: Install ansible requirements
-
-# shellcheck source=/dev/null
-pushd "$DOTFILES_DIR/playbooks"
-
-# shellcheck disable=SC1091
-source "./install"
 log_info "Rollout completed"
-popd
-
-if [[ "$os_family" == 'alpine' ]]; then
-    log_info "Unset gpg.ssh.program"
-    git config --global --unset gpg.ssh.program
-fi

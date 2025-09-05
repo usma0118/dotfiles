@@ -1,6 +1,18 @@
 ---
+- name: Setup security
+  when:
+    - ansible_env.HOME is defined
+  ansible.builtin.import_tasks: sops.yml
+  tags: security
+
 - name: Install lsd
   when:
     - ansible_env.HOME is defined
   ansible.builtin.import_tasks: lsd.yml
+  tags: devops
+
+- name: configure git
+  when:
+    - ansible_env.HOME is defined
+  ansible.builtin.import_tasks: git.yml
   tags: devops

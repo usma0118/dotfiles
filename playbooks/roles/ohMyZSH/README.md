@@ -13,5 +13,5 @@ Installs and configures Oh My Zsh, Powerlevel10k, and useful plugins for support
 ```yaml
 - hosts: all
   roles:
-    - role: ohMyZSH
+    - role: ohmyzsh
 ```

@@ -1,0 +1,25 @@
+# --- Dotfiles linking & zshrc includes ---
+- name: Symlink dotfiles and source profiles (Oh My Zsh present)
+  become: false
+  when:
+    - ansible_os_family in ["Darwin", "Linux"]
+    - ohmyzsh_present
+  block:
+    - name: Symlink git dotfiles
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/.dotfiles/.profile/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/{{ item }}"
+        state: link
+        force: true
+      loop:
+        - .gitconfig
+        - .gitignore_global
+        - .gitattributes
+      notify: Reload Zsh
+
+- name: Unset git gpg.ssh.program in containers
+  when: (ansible_env.container | default('')) | length > 0
+  ansible.builtin.git_config:
+    name: gpg.ssh.program
+    scope: global
+    state: absent

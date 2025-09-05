@@ -14,6 +14,7 @@
           - "*Powerline*.ttf"
           - "*Powerline*.otf"
         file_type: file
+      failed_when: false    # don't fail if some paths don't exist
       register: ohmyzsh_powerline_fonts
 
     - name: Install Powerline fonts (clone + run installer)

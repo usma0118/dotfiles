@@ -1,0 +1,38 @@
+# --- Install SOPS ---
+- name: Ensure SOPS is installed (macOS)
+  when: ansible_os_family == "Darwin"
+  community.general.homebrew:
+    name: sops
+    state: present
+
+- name: Ensure SOPS is installed (Debian/Ubuntu)
+  when: ansible_os_family == "Debian"
+  become: true
+  block:
+    - name: Add SOPS apt key (Mozilla)
+      ansible.builtin.apt_key:
+        url: https://keys.openpgp.org/vks/v1/by-fingerprint/3D6EDE4F09A8220BEF5D484C8F571BC79A6FDF22
+        state: present
+
+    - name: Add SOPS apt repo
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://deb.tuxed.net/apt/ stable main"
+        state: present
+      register: sops_repo
+
+    - name: Update apt cache if repo changed
+      ansible.builtin.apt:
+        update_cache: yes
+      when: sops_repo is changed
+
+    - name: Install SOPS package
+      ansible.builtin.apt:
+        name: sops
+        state: present
+
+- name: Ensure SOPS is installed (Alpine)
+  when: ansible_os_family == "Alpine"
+  become: true
+  community.general.apk:
+    name: sops
+    state: present

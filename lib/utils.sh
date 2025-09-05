@@ -1,22 +1,32 @@
-#!/bin/bash
-set -e
-set -u
-# utils.sh - Shared library
+# shellcheck disable=SC2148
+# lib/utils.sh
+# Shared helpers. Source me; do not execute.
 
-# Source the file only if it hasn't been sourced already
-if [ "${utils_loaded+x}" ]; then
-return 0
+# Prevent double-loading
+if [ "${UTILS_LOADED:-0}" = "1" ]; then
+  # shellcheck disable=SC2317
+  return 0 2>/dev/null || exit 0
 fi
+UTILS_LOADED=1
 
-declare -r utils_loaded=true
+# Do NOT set -e/-u in libraries.
 
-# Check OS using /etc/os-release
-if [ -f /etc/os-release ]; then
+# Helper: is cmd available?
+have() { command -v "$1" >/dev/null 2>&1; }
+
+# Detect OS family and export a lowercase identifier
+_detect_os_family() {
+  local id
+  if [ -r /etc/os-release ]; then
     # shellcheck disable=SC1091
-    . /etc/os-release  # Source the file to access variables
-    export os_family="${ID,,}"
-else
-    # Fallback to uname if /etc/os-release is not available
-    # shellcheck disable=SC2155
-    export os_family="$(uname -s)"
-fi
+    . /etc/os-release
+    id="${ID:-}"
+  else
+    id="$(uname -s 2>/dev/null || echo unknown)"
+  fi
+  printf '%s' "$id" | tr '[:upper:]' '[:lower:]'
+}
+
+declare -r os_family="$(_detect_os_family)"
+export os_family
+# Note: use 'os_family' (lowercase) in scripts for consistency
