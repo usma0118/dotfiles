@@ -11,7 +11,7 @@
   roles:
     - role: common
       user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
-    - role: ohMyZSH
+    - role: ohmyzsh
       user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
     - role: osx
   tasks:

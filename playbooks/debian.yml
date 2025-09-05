@@ -6,7 +6,7 @@
   roles:
     - role: common
       user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
-    - role: ohMyZSH
+    - role: ohmyzsh
       user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
   pre_tasks:
     - name: Display current user

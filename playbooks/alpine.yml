@@ -20,5 +20,5 @@
   roles:
     - role: common
       common_user: "{{ user }}"
-    - role: ohMyZSH
+    - role: ohmyzsh
       ohmyzsh_user: "{{ user }}"
