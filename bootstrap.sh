@@ -9,8 +9,7 @@ _have(){ command -v "$1" >/dev/null 2>&1; }
 DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
 GITHUB_USER="${GITHUB_USER:-usma0118}"
 DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
-CODESPACES="${CODESPACES:-}"
-CONTAINER_ENV="${container:-}"        # some envs export 'container'
+CONTAINER_ENV=$([[ -n "${CODESPACES:-}" || -n "${container:-}" ]] && echo true || echo false)
 export REMOTE_USER="${ANSIBLE_REMOTE_USER:-${SUDO_USER:-${USER}}}"
 
 # Ensure required files exist before sourcing
@@ -49,13 +48,20 @@ if ! have ansible || ! have ansible-playbook ; then
       $SUDO apt-get install -y ansible-core git direnv
       ;;
     alpine)
-      log_warning "Installing Ansible on Alpine…"
-      if apk info -e ansible-core >/dev/null 2>&1; then
-        $SUDO apk add --no-cache ansible-core git direnv
-      else
-        $SUDO apk add --no-cache python3 py3-pip git direnv
-        python3 -m pip install --upgrade --no-cache-dir pip
-        python3 -m pip install --no-cache-dir ansible-core
+      if [ [ "$CONTAINER_ENV" = true ]; then
+        if [ -n "${VIRTUAL_ENV:-}" ]; then
+          log_warning 'Installing Ansible on Alpine in venv: %s\n' "$VIRTUAL_ENV"
+        elif [ -f "$HOME/.venv/bin/activate" ]; then
+          # shellcheck disable=SC1090
+          . "$HOME/.venv/bin/activate"
+          printf 'info: activated venv at %s/.venv\n' "$HOME"
+          python3 -m pip install --no-cache-dir ansible-core
+        else
+          log_warning "Installing Ansible on Alpine…"
+          $SUDO apk add --no-cache ansible-core git direnv
+          python3 -m pip install --upgrade --no-cache-dir pip
+          python3 -m pip install --no-cache-dir ansible-core
+        fi
       fi
       ;;
     darwin)

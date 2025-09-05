@@ -1,2 +1,2 @@
 ---
-# defaults file for common
+common_user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
