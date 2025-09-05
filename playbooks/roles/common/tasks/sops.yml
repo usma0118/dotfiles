@@ -18,12 +18,12 @@
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64] https://deb.tuxed.net/apt/ stable main"
         state: present
-      register: sops_repo
+      register: common_sops_repo
 
     - name: Update apt cache if repo changed
       ansible.builtin.apt:
-        update_cache: yes
-      when: sops_repo is changed
+        update_cache: true
+      when: common_sops_repo is changed
 
     - name: Install SOPS package
       ansible.builtin.apt:

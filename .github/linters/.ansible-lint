@@ -6,6 +6,8 @@ warn_list:
   - command-instead-of-module
   - command-instead-of-shell
 exclude_paths:
+  - .ansible/
   - .cache/
   - .github/
   - .devcontainer/
+  - ./vscode/

@@ -15,7 +15,7 @@
       when:
         - ansible_os_family == "Ubuntu"
         - ansible_distribution_version | version_compare('20.04', '>=')
-    - name: zsh-syntax-highlighting on DevContainer
+    - name: Setup zsh-syntax-highlighting on DevContainer
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
@@ -56,14 +56,14 @@
         state: latest
       when:
         - ansible_os_family == "Darwin"
-    - name: source zsh-autosuggestions on "Darwin"
+    - name: Setup source zsh-autosuggestions on "Darwin"
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         line: "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
         insertafter: "source $ZSH/oh-my-zsh.sh"
         state: present
-    - name: zsh-autosuggestions on DevContainer
+    - name: Setup zsh-autosuggestions on DevContainer
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-autosuggestions.git

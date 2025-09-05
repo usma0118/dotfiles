@@ -11,7 +11,7 @@
   ansible.builtin.import_tasks: lsd.yml
   tags: devops
 
-- name: configure git
+- name: Configure git
   when:
     - ansible_env.HOME is defined
   ansible.builtin.import_tasks: git.yml

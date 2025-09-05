@@ -1,5 +1,6 @@
 ---
-- hosts:
+- name: Setup Mac for work
+  hosts:
     - local
   become: false
   gather_facts: true
@@ -22,7 +23,6 @@
       loop:
         - tradingview
         - drawio
-        # - dropbox ## Not using this on workdesk anymore.
         - visual-studio-code
         - iterm2
         - signal

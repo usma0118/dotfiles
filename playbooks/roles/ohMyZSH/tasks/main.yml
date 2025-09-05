@@ -31,14 +31,14 @@
 
     - name: Get current login shell from /etc/passwd
       ansible.builtin.command: getent passwd {{ ansible_user_id }}
-      register: user_info
+      register: ohmyzsh_user_info
       changed_when: false
 
     - name: Change default shell to zsh if not already
       ansible.builtin.user:
         name: "{{ ansible_user_id }}"
         shell: "{{ ohmyzsh_zsh_path.stdout | trim }}"
-      when: user_info.stdout.split(':')[-1] | trim != (ohmyzsh_zsh_path.stdout | trim)
+      when: ohmyzsh_user_info.stdout.split(':')[-1] | trim != (ohmyzsh_zsh_path.stdout | trim)
 
 # --- Default shell to zsh (macOS) ---
 - name: Ensure zsh is default shell (macOS)

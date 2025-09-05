@@ -1,5 +1,6 @@
 ---
-- hosts:
+- name: Setup Ubuntu server
+  hosts:
     - laptop
   become: true
   gather_facts: true

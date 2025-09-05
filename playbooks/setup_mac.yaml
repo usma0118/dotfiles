@@ -1,5 +1,6 @@
 ---
-- hosts: laptop
+- name: Setup macOS
+  hosts: laptop
   become: true
   gather_facts: true
   any_errors_fatal: true
