@@ -3,8 +3,9 @@ localhost ansible_connection=local
 
 # Workstations (run locally)
 [workstations]
-mac-m2 ansible_connection=local
-alpine-dev ansible_connection=local
+container ansible_connection=local
+localhost ansible_connection=local
+mac ansible_connection=local
 
 # Servers (SSH)
 [servers]

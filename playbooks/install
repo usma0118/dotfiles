@@ -34,8 +34,8 @@ elif ! tty -s; then
   log_info "Script is running in unattended mode."
   export ANSIBLE_STDOUT_CALLBACK=minimal
   export ANSIBLE_NO_WARNINGS=True
-  ansible-playbook "$playbook_file" -u "${SUDO_USER:-$USER}" -b "$@"
+  ansible-playbook "$playbook_file" -l localhost -u "${SUDO_USER:-$USER}" -b "$@"
 else
   log_info "Script is running in attended mode."
-  ansible-playbook "$playbook_file" -u "$REMOTE_USER" -b -K "$@"
+  ansible-playbook "$playbook_file" -l container -u "$REMOTE_USER" -b -K "$@"
 fi
