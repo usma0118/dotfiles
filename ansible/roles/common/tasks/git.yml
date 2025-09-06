@@ -21,8 +21,6 @@
   when: ansible_os_family in ["Darwin","Ubuntu","Alpine"]
   block:
     - name: Configure Git from group_vars (if provided)
-      become_user: "{{ common_user | default(ansible_user_id) }}"
-      become: true
       ansible.builtin.git_config:
         name: "{{ item.key }}"
         value: "{{ item.value }}"
