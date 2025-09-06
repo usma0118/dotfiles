@@ -18,9 +18,15 @@ elif [ -f "$HOME/.venv/bin/activate" ]; then
   . "$HOME/.venv/bin/activate"
   printf 'info: activated venv at %s/.venv\n' "$HOME"
 fi
+
+# Ansible issue with install location
 export ANSIBLE_PYTHON_INTERPRETER="$VIRTUAL_ENV/bin/python"
 declare -r ANSIBLE_ROLES_PATH="${DOTFILES_DIR}/ansible/roles:${ANSIBLE_ROLES_PATH:-}"
 export ANSIBLE_ROLES_PATH
+
+declare -r ANSIBLE_CONFIG="${ANSIBLE_CONFIG:-${DOTFILES_DIR}/ansible.cfg}"
+export ANSIBLE_CONFIG
+
 if [[ -n "$os_family_override" ]]; then
   log_info "Using OS family: $os_family with override"
   ansible-playbook -K "$playbook_file" -b "$@"
