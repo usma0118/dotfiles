@@ -3,7 +3,7 @@
 - name: Symlink dotfiles and source profiles
   become: false
   when:
-    - ansible_os_family in ["Darwin", "Linux"]
+    - ansible_os_family in ["Darwin", "Ubuntu","Alpine"]
   block:
     - name: Symlink git dotfiles
       ansible.builtin.file:
@@ -18,7 +18,7 @@
 
 - name: Set git config
   become: false
-  when: ansible_os_family in ["Darwin","Linux","Alpine"]
+  when: ansible_os_family in ["Darwin","Ubuntu","Alpine"]
   block:
     - name: Configure Git from group_vars (if provided)
       become_user: "{{ common_user | default(ansible_user_id) }}"
@@ -35,8 +35,8 @@
         name: gpg.ssh.program
         value: "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
         scope: global
-    - name: Set gpg ssh program on Linux
-      when: ansible_os_family == "Linux" and ansible_os_family != "Alpine"
+    - name: Set gpg ssh program on Ubuntu
+      when: ansible_os_family == "Ubuntu"
       community.general.git_config:
         name: gpg.ssh.program
         value: "op-ssh-sign"

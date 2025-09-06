@@ -1,5 +1,5 @@
 - name: Install Powerline fonts
-  when: ansible_os_family in ["Darwin","Linux"]
+  when: ansible_os_family in ["Darwin","Ubuntu","Alpine"]
   become: false
   block:
     - name: Check if any Powerline fonts already exist
