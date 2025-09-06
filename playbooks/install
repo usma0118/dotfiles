@@ -19,11 +19,12 @@ elif [ -f "$HOME/.venv/bin/activate" ]; then
   printf 'info: activated venv at %s/.venv\n' "$HOME"
 fi
 export ANSIBLE_PYTHON_INTERPRETER="$VIRTUAL_ENV/bin/python"
+export ANSIBLE_COLLECTIONS_PATH="${DOTFILES_DIR}/ansible/roles:${ANSIBLE_COLLECTIONS_PATH}"
 if [[ -n "$os_family_override" ]]; then
   log_info "Using OS family: $os_family with override"
   ansible-playbook -K "$playbook_file" -b "$@"
 elif ! tty -s; then
-  log_warning "Script is running in unattended mode."
+  log_info "Script is running in unattended mode."
   export ANSIBLE_STDOUT_CALLBACK=minimal
   export ANSIBLE_NO_WARNINGS=True
   ansible-playbook "$playbook_file" -u "${SUDO_USER:-$USER}" -b "$@"
