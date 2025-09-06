@@ -6,7 +6,7 @@ set -u
 source "$DOTFILES_DIR/lib/log.sh"
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/utils.sh"
-
+declare -r DOTFILES_DIR="${DOTFILES_DIR:-}"
 declare -r os_family_override="${OS_FAMILY_OVERRIDE:-}"
 declare -r playbook_file="${os_family_override:-${os_family}}.yml"
 declare -r REMOTE_USER="${REMOTE_USER:-}"

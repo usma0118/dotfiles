@@ -1,6 +1,6 @@
-#!/bin/bash
-set -e
-set -u
+# shellcheck disable=SC2148
+# lib/updater.sh
+# Shared helpers. Source me; do not execute.
 if [ -z "${DOTFILES_DIR}" ]; then
     declare -r DOTFILES_DIR="$HOME/.dotfiles"
 fi

@@ -7,6 +7,7 @@ _have(){ command -v "$1" >/dev/null 2>&1; }
 
 # Defaults / env
 declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+export DOTFILES_DIR
 declare -r GITHUB_USER="${GITHUB_USER:-usma0118}"
 declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
 declare -r CONTAINER_ENV=$([[ -n "${CODESPACES:-}" || -n "${container:-}" ]] && echo true || echo false)
