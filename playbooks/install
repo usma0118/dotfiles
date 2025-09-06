@@ -19,7 +19,6 @@ elif [ -f "$HOME/.venv/bin/activate" ]; then
   printf 'info: activated venv at %s/.venv\n' "$HOME"
 fi
 export ANSIBLE_PYTHON_INTERPRETER="$VIRTUAL_ENV/bin/python"
-
 if [[ -n "$os_family_override" ]]; then
   log_info "Using OS family: $os_family with override"
   ansible-playbook -K "$playbook_file" -b "$@"
