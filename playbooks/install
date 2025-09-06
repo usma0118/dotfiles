@@ -13,13 +13,13 @@ declare -r REMOTE_USER="${REMOTE_USER:-}"
 
 if [[ -n "$os_family_override" ]]; then
   log_info "Using OS family: $os_family with override"
-  ansible-playbook -K -i inventory "$playbook_file"
+  ansible-playbook -K "$playbook_file" "$@"
 elif ! tty -s; then
   log_warning "Script is running in unattended mode."
   export ANSIBLE_STDOUT_CALLBACK=minimal
   export ANSIBLE_NO_WARNINGS=True
-  ansible-playbook -i inventory "$playbook_file" -u "${SUDO_USER:-$USER}" -b
+  ansible-playbook "$playbook_file" -u "${SUDO_USER:-$USER}" -b "$@"
 else
   log_info "Script is running in attended mode."
-  ansible-playbook -i inventory "$playbook_file" -u "$REMOTE_USER" -b -K "$@" -vvv
+  ansible-playbook "$playbook_file" -u "$REMOTE_USER" -b -K "$@"
 fi
