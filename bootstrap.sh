@@ -66,7 +66,6 @@ if ! have ansible || ! have ansible-playbook ; then
         fi
           python -m pip install --upgrade --no-cache-dir pip
           python -m pip install --no-cache-dir ansible-core
-        fi
       fi
       ;;
     darwin)
