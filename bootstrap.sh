@@ -59,12 +59,13 @@ if ! have ansible || ! have ansible-playbook ; then
           # shellcheck disable=SC1090
           . "$HOME/.venv/bin/activate"
           printf 'info: activated venv at %s/.venv\n' "$HOME"
-          python3 -m pip install --no-cache-dir ansible-core
+          python -m pip install --no-cache-dir ansible-core
         else
           log_warning "Installing Ansible on Alpine…"
           $SUDO apk add --no-cache ansible-core git direnv
-          python3 -m pip install --upgrade --no-cache-dir pip
-          python3 -m pip install --no-cache-dir ansible-core
+        fi
+          python -m pip install --upgrade --no-cache-dir pip
+          python -m pip install --no-cache-dir ansible-core
         fi
       fi
       ;;
