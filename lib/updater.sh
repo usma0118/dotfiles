@@ -1,6 +1,6 @@
 # shellcheck disable=SC2148
 # lib/updater.sh
-# Shared helpers. Source me; do not execute.
+# git repo update helpers. Source me; do not execute.
 if [ -z "${DOTFILES_DIR}" ]; then
     declare -r DOTFILES_DIR="$HOME/.dotfiles"
 fi
@@ -31,6 +31,6 @@ elif git merge-base --is-ancestor "$LOCAL" "$REMOTE"; then
 
     if [[ $RESPONSE =~ ^[Yy]$ ]]; then
         log_info "Updating the repository..."
-        git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" pull origin main -q
+        git --git-dir="$DOTFILES_DIR/.git" --work-tree="$DOTFILES_DIR" pull --ff-only origin main -q
     fi
 fi
