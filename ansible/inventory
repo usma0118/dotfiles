@@ -1,10 +1,6 @@
-[local]
-localhost ansible_connection=local
-
 # Workstations (run locally)
 [workstations]
 container ansible_connection=local
-localhost ansible_connection=local
 mac ansible_connection=local
 
 # Servers (SSH)
