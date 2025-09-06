@@ -1,0 +1,16 @@
+[local]
+localhost ansible_connection=local
+
+# Workstations (run locally)
+[workstations]
+mac-m2 ansible_connection=local
+alpine-dev ansible_connection=local
+
+# Servers (SSH)
+[servers]
+antaresinc-cluster ansible_host=192.100.1.200
+
+# Convenience group
+[all_machines:children]
+workstations
+servers

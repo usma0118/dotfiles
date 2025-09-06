@@ -6,10 +6,10 @@ _abort(){ echo "ERROR: $*" >&2; exit 1; }
 _have(){ command -v "$1" >/dev/null 2>&1; }
 
 # Defaults / env
-DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
-GITHUB_USER="${GITHUB_USER:-usma0118}"
-DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
-CONTAINER_ENV=$([[ -n "${CODESPACES:-}" || -n "${container:-}" ]] && echo true || echo false)
+declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
+declare -r GITHUB_USER="${GITHUB_USER:-usma0118}"
+declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
+declare -r CONTAINER_ENV=$([[ -n "${CODESPACES:-}" || -n "${container:-}" ]] && echo true || echo false)
 export REMOTE_USER="${ANSIBLE_REMOTE_USER:-${SUDO_USER:-${USER}}}"
 
 # Ensure required files exist before sourcing

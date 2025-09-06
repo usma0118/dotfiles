@@ -8,8 +8,8 @@
 	  ,"postStartCommand": {
 		"git": "git config --global --add safe.directory ${containerWorkspaceFolder}"
 	  }
-	//   ,"mounts": [
-	// 	"source=bashhistory,target=/home/${containerUser}/.history,type=volume"
-	// ]
-	// }
+	  ,"mounts": [
+		"source=bashhistory,target=/home/${containerUser}/.history,type=volume"
+		,"source=${localEnv:HOME}/.config/sops/age,target=/home/${containerUser}/.config/sops/age,type=bind,readonly,consistency=cached"
+	]
 }

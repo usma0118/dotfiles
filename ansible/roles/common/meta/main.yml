@@ -1,0 +1,39 @@
+---
+galaxy_info:
+  role_name: common
+  author: usma0118
+  description: Common baseline configuration role (dotfiles, git setup, secrets via SOPS).
+  company: AntaresInc
+  license: MIT
+  min_ansible_version: "2.15"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Alpine
+      versions:
+        - all
+    - name: MacOSX
+      versions:
+        - all
+
+  galaxy_tags:
+    - common
+    - dotfiles
+    - git
+    - sops
+    - bootstrap
+    - config
+
+# No role-to-role dependencies
+dependencies: []
+
+# Collections required for this role
+collections:
+  - community.sops
+  - community.general
+  - ansible.posix

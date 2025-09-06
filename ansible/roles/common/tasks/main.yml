@@ -15,4 +15,4 @@
   when:
     - ansible_env.HOME is defined
   ansible.builtin.import_tasks: git.yml
-  tags: devops
+  tags: [devops, git]
