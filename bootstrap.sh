@@ -23,6 +23,9 @@ source "$DOTFILES_DIR/lib/log.sh"
 # shellcheck disable=SC1091
 source "$DOTFILES_DIR/lib/utils.sh"
 
+# shellcheck disable=SC1091
+source "$DOTFILES_DIR/lib/updater.sh"
+
 # sudo helper
 SUDO=""
 if [ "${EUID:-$(id -u)}" -ne 0 ]; then
