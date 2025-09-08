@@ -64,7 +64,7 @@ if ! have ansible || ! have ansible-playbook ; then
       else
         log_info "Homebrew already installed"
       fi
-      brew install ansible-core git
+      brew install ansible git
       ;;
     *)
       abort "Unsupported OS family: ${os_family}"
