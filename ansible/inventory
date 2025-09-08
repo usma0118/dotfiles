@@ -1,9 +1,11 @@
 # Workstations (run locally)
 [workstations]
-container ansible_connection=local
 mac ansible_connection=local
+
+[development]
+container ansible_connection=local
 
 # Convenience group
 [all_machines:children]
 workstations
-servers
+development

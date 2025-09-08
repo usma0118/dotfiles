@@ -1,7 +1,7 @@
 ---
 - name: Alpine container setup
   hosts: 
-    - workstations
+    - development
   gather_facts: true
   any_errors_fatal: true
   vars:
