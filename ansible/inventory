@@ -1,6 +1,6 @@
 # Workstations (run locally)
 [workstations]
-mac ansible_connection=local
+mac ansible_connection=local ansible_python_interpreter=/usr/bin/python3
 
 [development]
 container ansible_connection=local
