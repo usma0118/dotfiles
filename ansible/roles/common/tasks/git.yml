@@ -1,0 +1,47 @@
+# --- Dotfiles linking & zshrc includes ---
+---
+- name: Symlink dotfiles and source profiles
+  become: false
+  when:
+    - ansible_os_family in ["Darwin", "Ubuntu","Alpine"]
+  block:
+    - name: Symlink git dotfiles
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/.dotfiles/.profile/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/{{ item }}"
+        state: link
+        force: true
+      loop:
+        - .gitignore_global
+        - .gitattributes
+      notify: Reload Zsh
+
+- name: Set git config
+  become: false
+  when: ansible_os_family in ["Darwin","Ubuntu","Alpine"]
+  block:
+    - name: Configure Git from group_vars (if provided)
+      ansible.builtin.git_config:
+        name: "{{ item.key }}"
+        value: "{{ item.value }}"
+        scope: global
+      loop: "{{ (git_config_vars | default({})) | dict2items }}"
+      when: (git_config_vars | default({})) | length > 0
+    - name: Set gpg ssh program on Darwin
+      when: ansible_os_family == "Darwin"
+      community.general.git_config:
+        name: gpg.ssh.program
+        value: "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+        scope: global
+    - name: Set gpg ssh program on Ubuntu
+      when: ansible_os_family == "Ubuntu"
+      community.general.git_config:
+        name: gpg.ssh.program
+        value: "op-ssh-sign"
+        scope: global
+    - name: Unset git gpg.ssh.program in dev containers
+      when: (ansible_env.container | default('')) | length > 0
+      ansible.builtin.git_config:
+        name: gpg.ssh.program
+        scope: global
+        state: absent

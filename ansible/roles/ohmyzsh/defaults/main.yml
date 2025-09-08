@@ -1,5 +1,5 @@
 ---
-user: "{{ ansible_user | default(ansible_env.USER) }}"
+ohmyzsh_user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
 ohmyzsh_theme: "powerlevel10k"
 ohmyzsh_plugins:
   - git

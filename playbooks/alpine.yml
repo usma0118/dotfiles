@@ -1,6 +1,7 @@
 ---
 - name: Alpine container setup
-  hosts: local
+  hosts: 
+    - workstations
   gather_facts: true
   any_errors_fatal: true
   vars:

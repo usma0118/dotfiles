@@ -165,7 +165,7 @@
 # --- History tuning ---
 - name: Set zsh history configuration
   when:
-    - ansible_os_family in ["Darwin", "Linux"]
+    - ansible_os_family in ["Darwin", "Ubuntu","Alpine"]
     - ohmyzsh_present
   ansible.builtin.import_tasks: hist.yml
 

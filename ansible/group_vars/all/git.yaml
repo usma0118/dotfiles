@@ -1,0 +1,8 @@
+git_config_vars:
+  user.name: "usma0118"
+  user.email: "usmanmasood@msn.com"
+  user.signingkey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBQDB+faH2Cz94ntwPEUZLz5CCKOtDWBcgAtWeNQtZQL"
+  init.defaultBranch: "main"
+  gpg.format: ssh
+  commit.gpgsign: true
+  core.excludesFile: "~/.gitignore_global"

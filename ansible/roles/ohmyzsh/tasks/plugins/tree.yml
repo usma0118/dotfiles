@@ -1,3 +1,4 @@
+---
 - name: Installing tree
   tags: [packages, tree]
   block:
@@ -9,8 +10,8 @@
             name: tree
             state: present
         - name: Install tree on Linux based systems
+          when: ansible_os_family in ["Debian", "RedHat", "Suse", "Archlinux", "Alpine"]
           ansible.builtin.package:
             name: tree
             state: present
-          when: ansible_os_family in ["Debian", "RedHat", "Suse", "Archlinux", "Alpine"]
           become: true

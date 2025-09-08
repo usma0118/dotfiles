@@ -1,7 +1,6 @@
 ---
 - name: Setting up mac environment
-  hosts: local
-  become: true
+  hosts: mac
   gather_facts: true
   any_errors_fatal: true
   pre_tasks:
