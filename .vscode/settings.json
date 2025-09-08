@@ -1,13 +1,13 @@
 {
-    "ansible.python.interpreterPath": "/home/vscode/.venv/bin/python",
+    "ansible.python.interpreterPath": "$HOME/.venv/bin/python",
     "terminal.integrated.fontFamily": "MesloLGS NF",
     "dotfiles.repository": "usma0118/dotfiles",
     "dotfiles.targetPath": "~/.dotfiles",
     "dotfiles.installCommand": "~/.dotfiles/bootstrap.sh",
-    "ansible.python.activationScript": "/home/vscode/.venv/bin/activate",
-    "ansible.ansible.path": "/home/vscode/.venv/bin/ansible",
+    "ansible.python.activationScript": "$HOME/.venv/bin/activate",
+    "ansible.ansible.path": "$HOME/.venv/bin/ansible",
     "ansible.validation.enabled": true,
-    "ansible.validation.lint.arguments": "-c ansible/.ansible-lint",
+    "ansible.validation.lint.arguments": "-c .github/linters/.ansible-lint",
     "ansible.validation.lint.enabled": true,
-    "ansible.validation.lint.path": "/home/vscode/.venv/bin/ansible-lint",
+    "ansible.validation.lint.path": "$HOME/.venv/bin/ansible-lint",
 }

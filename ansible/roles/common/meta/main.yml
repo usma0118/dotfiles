@@ -37,3 +37,4 @@ collections:
   - community.sops
   - community.general
   - ansible.posix
+  - ansible.builtin

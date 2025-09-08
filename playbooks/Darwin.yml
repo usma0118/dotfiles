@@ -1,9 +1,14 @@
 ---
 - name: Setting up mac environment
-  hosts: mac
+  hosts:
+    - mac
   gather_facts: true
   any_errors_fatal: true
   pre_tasks:
+    - name: Exit if not running on macOS
+      ansible.builtin.fail:
+        msg: "This playbook is intended for macOS only."
+      when: ansible_facts['os_family'] != "Darwin"
     - name: Ensuring Homebrew Is Installed
       ansible.builtin.stat:
         path: brew
@@ -20,8 +25,11 @@
       when:
         - homebrew_check.stat.exists
   roles:
-    - role: osx
     - role: common
+      common_user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: ohmyzsh
+      ohmyzsh_user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    - role: osx
   tasks:
     # ensure sops key is loaded and placed
     # install sops
@@ -35,15 +43,32 @@
         - name: Homebrew
           community.general.homebrew:
             name: "{{ item }}"
-            state: latest
+            state: present
             with_items:
               - podman
               # - multipass
-        - name: Homebrew cask
+        - name: Homebrew cask for common
           community.general.homebrew_cask:
             name: "{{ item }}"
-            state: latest
+            state: present
             with_items:
-              - google-drive
-              - instaloader
               - tradingview
+              - drawio
+              - visual-studio-code
+              - iterm2
+              - signal
+              - dozer
+        - name: Install cask apps for personal mac only
+          community.general.homebrew_cask:
+            name: "{{ item }}"
+            state: present
+          when:
+            - inventory_hostname == "mac"
+          loop:
+            - 1password-cli
+            - autodesk-fusion
+            - bambu-studio
+            - dropbox
+            - firefox
+            - vivaldi
+            - dozer

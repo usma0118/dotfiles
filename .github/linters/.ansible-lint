@@ -5,6 +5,8 @@ warn_list:
   - unnamed-task
   - command-instead-of-module
   - command-instead-of-shell
+skip_list:
+  - latest[git]
 exclude_paths:
   - .ansible/
   - .cache/

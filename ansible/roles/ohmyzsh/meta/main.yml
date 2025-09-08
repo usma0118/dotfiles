@@ -2,10 +2,22 @@
 # Role metadata
 galaxy_info:
   author: USMA0118
-  description: Install and configure Oh My Zsh with plugins and themes.
-  platforms:
-    - name: Alpine
-    - name: Ubuntu
-    - name: Darwin
+  company: AntaresInc
   license: MIT
+  description: "Ansible role for managing Oh My Zsh configuration"
+  min_ansible_version: "2.15"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Alpine
+      versions:
+        - all
+    - name: MacOSX
+      versions:
+        - all
 dependencies: []

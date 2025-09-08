@@ -50,20 +50,13 @@
       changed_when: false
       failed_when: ohmyzsh_darwin_zsh.rc != 0
 
-    - name: Ensure zsh path is listed in /etc/shells (macOS)
-      become: true
-      ansible.builtin.lineinfile:
-        path: /etc/shells
-        line: "{{ ohmyzsh_darwin_zsh.stdout | trim }}"
-        state: present
-
     - name: Get current login shell (macOS)
       ansible.builtin.command: dscl . -read /Users/{{ ansible_user_id }} UserShell
       register: ohmyzsh_darwin_shell
       changed_when: false
 
     - name: Change default shell to zsh if not already (macOS)
-      become: true
+      become: false
       ansible.builtin.command: chsh -s "{{ ohmyzsh_darwin_zsh.stdout | trim }}" "{{ ansible_user_id }}"
       when: ohmyzsh_darwin_shell.stdout is not search(ohmyzsh_darwin_zsh.stdout | trim)
 

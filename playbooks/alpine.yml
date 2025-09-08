@@ -1,6 +1,6 @@
 ---
 - name: Alpine container setup
-  hosts: 
+  hosts:
     - development
   gather_facts: true
   any_errors_fatal: true
