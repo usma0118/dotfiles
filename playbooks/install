@@ -15,7 +15,8 @@ if [ -n "${VIRTUAL_ENV:-}" ]; then
   log_warning 'Ansible in venv: %s\n' "$VIRTUAL_ENV"
 elif [ -f "$HOME/.venv/bin/activate" ]; then
   # shellcheck disable=SC1090
-  . "$HOME/.venv/bin/activate"
+  # shellcheck disable=SC1091
+  source "$HOME/.venv/bin/activate"
   printf 'info: activated venv at %s/.venv\n' "$HOME"
 fi
 
@@ -29,7 +30,7 @@ export ANSIBLE_CONFIG
 
 if [[ -n "$os_family_override" ]]; then
   log_info "Using OS family: $os_family with override"
-  ansible-playbook -K "$playbook_file" -b "$@"
+  ansible-playbook -l mac -K "$playbook_file" -b "$@"
 elif ! tty -s; then
   log_info "Script is running in unattended mode."
   export ANSIBLE_STDOUT_CALLBACK=minimal

@@ -3,10 +3,6 @@
 container ansible_connection=local
 mac ansible_connection=local
 
-# Servers (SSH)
-[servers]
-antaresinc-cluster ansible_host=192.100.1.200
-
 # Convenience group
 [all_machines:children]
 workstations

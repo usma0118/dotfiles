@@ -9,8 +9,11 @@ _have(){ command -v "$1" >/dev/null 2>&1; }
 declare -r DOTFILES_DIR="${DOTFILES_DIR:-"$HOME/.dotfiles"}"
 export DOTFILES_DIR
 declare -r GITHUB_USER="${GITHUB_USER:-usma0118}"
-declare -r DOTFILES_REPO="https://github.com/${GITHUB_USER}/dotfiles.git"
-declare -r CONTAINER_ENV=$([[ -n "${CODESPACES:-}" || -n "${container:-}" ]] && echo true || echo false)
+
+declare CONTAINER_ENV
+CONTAINER_ENV=$([[ -n "${CODESPACES:-}" || -n "${container:-}" ]] && echo true || echo false)
+readonly CONTAINER_ENV
+
 export REMOTE_USER="${ANSIBLE_REMOTE_USER:-${SUDO_USER:-${USER}}}"
 
 # Ensure required files exist before sourcing
@@ -52,12 +55,13 @@ if ! have ansible || ! have ansible-playbook ; then
       $SUDO apt-get install -y ansible-core git direnv
       ;;
     alpine)
-      if [ [ "$CONTAINER_ENV" = true ]; then
+      if [ "$CONTAINER_ENV" = true ]; then
         if [ -n "${VIRTUAL_ENV:-}" ]; then
           log_warning 'Installing Ansible on Alpine in venv: %s\n' "$VIRTUAL_ENV"
         elif [ -f "$HOME/.venv/bin/activate" ]; then
           # shellcheck disable=SC1090
-          . "$HOME/.venv/bin/activate"
+          # shellcheck disable=SC1091
+          source "$HOME/.venv/bin/activate"
           printf 'info: activated venv at %s/.venv\n' "$HOME"
           python -m pip install --no-cache-dir ansible-core
         else

@@ -62,7 +62,6 @@ repos:
         types: [shell]              # scripts with a shebang or *.sh
         args:
           - --severity=style        # tweak if you want: error|warning|info|style
-          - --config=.github/linters/.shellcheck
         exclude: |
           (^|/)(\.venv|venv|node_modules|dist|build|\.direnv|\.git)/
 
