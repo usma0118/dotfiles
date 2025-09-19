@@ -63,7 +63,7 @@
 # --- Oh My Zsh detection ---
 - name: Check if Oh My Zsh is installed
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    path: "{{ ansible_user_dir }}/.oh-my-zsh"
   register: ohmyzsh_installed
   changed_when: false
   failed_when: false
@@ -91,7 +91,7 @@
 
     - name: Ensure ZSH env var is set in .zshrc
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         regexp: '^export ZSH='
         line: 'export ZSH="$HOME/.oh-my-zsh"'
         state: present
@@ -100,7 +100,7 @@
 
     - name: Re-check if Oh My Zsh is installed (refresh var)
       ansible.builtin.stat:
-        path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+        path: "{{ ansible_user_dir }}/.oh-my-zsh"
       register: ohmyzsh_installed
 
 # --- Theme / fonts ---
@@ -118,7 +118,7 @@
       when: ansible_os_family in ["Alpine", "Debian"]
       ansible.builtin.git:  # noqa latest[git]
         repo: https://github.com/romkatv/powerlevel10k.git
-        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
+        dest: "{{ ansible_user_dir }}/.oh-my-zsh/custom/themes/powerlevel10k"
         depth: 1
         update: false
         version: HEAD
@@ -126,14 +126,14 @@
     - name: Add Powerlevel10k theme source to .zshrc on Darwin
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         insertafter: '^source \$ZSH/oh-my-zsh\.sh$'
         line: 'source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme'
         state: present
 
     - name: Ensure Powerlevel10k is the active theme
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         regexp: '^ZSH_THEME='
         line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
         state: present
@@ -141,7 +141,7 @@
     - name: Configure powerlevel10k in .zshrc (container override)
       when: ansible_env.container is defined
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         insertafter: '^ZSH_THEME='
         line: "[[ ! -f ~/.dotfiles/zshrc/themes/{{ item }} ]] || source ~/.dotfiles/zshrc/themes/{{ item }}"
         state: present
@@ -150,8 +150,8 @@
 
 - name: Install Powerlevel10k fonts
   when:
-    - ansible_env.HOME is defined
-    - ansible_env.HOME != ''
+    - ansible_user_dir is defined
+    - ansible_user_dir != ''
   ansible.builtin.import_tasks: powerfont.yml
   tags: [fonts, powerlevel10k]
 

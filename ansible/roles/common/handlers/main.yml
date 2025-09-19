@@ -1,2 +1,6 @@
 ---
 # handlers file for common
+- name: Reload Zsh
+  become: false
+  ansible.builtin.command: zsh -lic 'omz reload'  # or skip entirely in CI/containers
+  when: ansible_os_family in ["Darwin", "Ubuntu","Alpine"] and (ansible_env.CI is not defined) and (ansible_env.container is not defined)

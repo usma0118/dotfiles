@@ -1,3 +1,4 @@
+---
 git_config_vars:
   user.name: "usma0118"
   user.email: "usmanmasood@msn.com"
@@ -5,4 +6,4 @@ git_config_vars:
   init.defaultBranch: "main"
   gpg.format: ssh
   commit.gpgsign: true
-  core.excludesFile: "~/.gitignore_global"
+  core.excludesFile: "$HOME/.dotfiles/.gitignore_global"

@@ -57,12 +57,12 @@ if ! have ansible || ! have ansible-playbook ; then
     alpine)
       if [ "$CONTAINER_ENV" = true ]; then
         if [ -n "${VIRTUAL_ENV:-}" ]; then
-          log_warning 'Installing Ansible on Alpine in venv: %s\n' "$VIRTUAL_ENV"
+          log_info 'Installing Ansible in venv:' "$VIRTUAL_ENV"
         elif [ -f "$HOME/.venv/bin/activate" ]; then
           # shellcheck disable=SC1090
           # shellcheck disable=SC1091
           source "$HOME/.venv/bin/activate"
-          printf 'info: activated venv at %s/.venv\n' "$HOME"
+          log_warning 'info: activated venv at %s/.venv\n' "$HOME"
           python -m pip install --no-cache-dir ansible-core
         else
           log_warning "Installing Ansible on Alpine…"

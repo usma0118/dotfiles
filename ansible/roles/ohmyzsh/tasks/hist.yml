@@ -1,7 +1,7 @@
 ---
 - name: Ensure ZSH history options are set in .zshrc
   ansible.builtin.blockinfile:
-    path: ~/.zshrc
+    path: "{{ ansible_user_dir }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED ZSH HISTORY"
     insertafter: EOF
     block: |

@@ -9,14 +9,14 @@
   when: ansible_os_family == 'Darwin'
 - name: Ensure flux bindings exist once in ~/.zshrc
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "{{ ansible_user_dir }}/.zshrc"
     insertafter: EOF
     marker: "# {mark} flux"
     block: |
       [ -f flux ] && source <(flux completion bash)
 - name: Ensure kubectl exist once in ~/.zshrc
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "{{ ansible_user_dir }}/.zshrc"
     marker: "# {mark} kubectl"
     insertafter: EOF
     block: |

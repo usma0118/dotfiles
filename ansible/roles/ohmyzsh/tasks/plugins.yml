@@ -19,7 +19,7 @@
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+        dest: "{{ ansible_user_dir }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
         depth: 1
       when:
         - ansible_env.container is defined
@@ -27,7 +27,7 @@
     - name: Source zsh-syntax-highlighting on "Darwin"
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         line: "source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
         insertafter: "autoload -U compinit; compinit"
 
@@ -35,7 +35,7 @@
       when:
         - ansible_env.container is defined
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.local/share/zsh/plugins"
+        path: "{{ ansible_user_dir }}/.local/share/zsh/plugins"
         state: directory
         mode: "0755"
     - name: Symlink powerlevel10k to local zsh plugins on DevContainer
@@ -43,7 +43,7 @@
         - ansible_env.container is defined
       ansible.builtin.file:
         src: /usr/share/zsh/plugins/powerlevel10k
-        dest: "{{ ansible_env.HOME }}/.local/share/zsh/plugins/powerlevel10k"
+        dest: "{{ ansible_user_dir }}/.local/share/zsh/plugins/powerlevel10k"
         state: link
         force: true
 
@@ -59,7 +59,7 @@
     - name: Setup source zsh-autosuggestions on "Darwin"
       when: ansible_os_family == "Darwin"
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         line: "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
         insertafter: "source $ZSH/oh-my-zsh.sh"
         state: present
@@ -67,7 +67,7 @@
       become: true
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-autosuggestions.git
-        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+        dest: "{{ ansible_user_dir }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
         depth: 1
       when:
         - ansible_env.container is defined

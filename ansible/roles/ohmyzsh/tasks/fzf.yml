@@ -9,7 +9,7 @@
         - ansible_os_family == "Darwin"
     - name: FZF key bindings and fuzzy completion
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         line: "source <(fzf --zsh)"
         insertafter: EOF
       when:
@@ -22,7 +22,7 @@
         - ansible_os_family == "Ubuntu"
     - name: Ensure fzf init lines exist once in ~/.zshrc
       ansible.builtin.blockinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         create: true
         mode: "0600"
         marker: "# {mark} ANSIBLE fzf"

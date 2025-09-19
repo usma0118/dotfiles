@@ -7,12 +7,11 @@
   block:
     - name: Symlink git dotfiles
       ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.dotfiles/.profile/{{ item }}"
-        dest: "{{ ansible_env.HOME }}/{{ item }}"
+        src: "/home/{{ common_user }}/.dotfiles/.profile/{{ item }}"
+        dest: "/home/{{ common_user }}/{{ item }}"
         state: link
         force: true
       loop:
-        - .gitignore_global
         - .gitattributes
       notify: Reload Zsh
 

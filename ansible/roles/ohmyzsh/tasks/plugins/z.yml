@@ -1,3 +1,4 @@
+---
 - name: Installing Z
   when: ansible_os_family == "Darwin"
   tags: [tools]
@@ -10,7 +11,7 @@
 
     - name: Z key bindings and fuzzy completion
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         create: true
         mode: '0644'
         insertafter: EOF
@@ -22,12 +23,12 @@
   block:
     - name: Check if z.sh exists
       ansible.builtin.stat:
-        path: "{{ ansible_env.HOME }}/.z/z.sh"
+        path: "{{ ansible_user_dir }}/.z/z.sh"
       register: ohmyzsh_z_script
 
     - name: Ensure ~/.z exists
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.z"
+        path: "{{ ansible_user_dir }}/.z"
         state: directory
         mode: '0755'
       when: not ohmyzsh_z_script.stat.exists
@@ -35,13 +36,13 @@
     - name: Download z.sh
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/rupa/z/refs/heads/master/z.sh
-        dest: "{{ ansible_env.HOME }}/.z/z.sh"
+        dest: "{{ ansible_user_dir }}/.z/z.sh"
         mode: '0644'
       when: not ohmyzsh_z_script.stat.exists
 
     - name: Source z and add zsh completion (once)
       ansible.builtin.blockinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
+        path: "{{ ansible_user_dir }}/.zshrc"
         create: true
         mode: "0600"
         marker: "# {mark} ANSIBLE z"

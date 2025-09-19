@@ -6,9 +6,9 @@
       become: false
       ansible.builtin.find:
         paths:
-          - "{{ ansible_env.HOME }}/Library/Fonts"
+          - "{{ ansible_user_dir }}/Library/Fonts"
           - "/Library/Fonts"
-          - "{{ ansible_env.HOME }}/.local/share/fonts"
+          - "{{ ansible_user_dir }}/.local/share/fonts"
           - "/usr/share/fonts"
         patterns:
           - "*Powerline*.ttf"

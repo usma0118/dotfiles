@@ -1,3 +1,4 @@
+---
 - name: Setup lsd dircolors
   block:
     - name: Install lsd on "Darwin"
@@ -15,13 +16,15 @@
       when:
         - ansible_os_family not in ["Darwin", "Windows"]
     - name: Create a directory if it does not exist
+      become: false
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.config/lsd"
+        path: "{{ ansible_user_dir }}/.config/lsd"
         state: directory
         mode: "0755"
     - name: Symlink .dircolors
+      become: false
       ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.dotfiles/.profile/.dircolors"
-        dest: "{{ ansible_env.HOME }}/.config/lsd/.dircolors"
+        src: "{{ ansible_user_dir }}/.dotfiles/.profile/.dircolors"
+        dest: "{{ ansible_user_dir }}/.config/lsd/.dircolors"
         state: link
         force: true
